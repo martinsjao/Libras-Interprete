@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Libras Interprete - Agendamento</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">
+                <h1>🤟 Libras Interprete</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Início</a></li>
+                <li><a href="#services">Serviços</a></li>
+                <li><a href="#schedule">Agendamento</a></li>
+                <li><a href="#contact">Contato</a></li>
+            </ul>
+            <div class="menu-mobile">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Seção Home -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h2>Interpretação em Libras</h2>
+            <h3>Profissional qualificada para sua comunicação</h3>
+            <p>Agende agora mesmo uma interpretação em Libras para seu evento, consulta, reunião ou curso.</p>
+            <a href="#schedule" class="btn-primary">Agendar Agora</a>
+        </div>
+        <div class="hero-image">
+            <img src="https://via.placeholder.com/400x300/2196F3/FFFFFF?text=Libras+Interprete" alt="Intérprete de Libras">
+        </div>
+    </section>
+
+    <!-- Seção Serviços -->
+    <section id="services" class="services">
+        <h2>Nossos Serviços</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <h3>📚 Cursos e Palestras</h3>
+                <p>Interpretação para cursos, palestras e workshops educacionais.</p>
+            </div>
+            <div class="service-card">
+                <h3>🏥 Consultas Médicas</h3>
+                <p>Acompanhamento em consultas médicas, exames e procedimentos hospitalares.</p>
+            </div>
+            <div class="service-card">
+                <h3>💼 Reuniões Empresariais</h3>
+                <p>Interpretação em reuniões, entrevistas e eventos corporativos.</p>
+            </div>
+            <div class="service-card">
+                <h3>📺 Eventos ao Vivo</h3>
+                <p>Interpretação em conferências, seminários e transmissões ao vivo.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Agendamento -->
+    <section id="schedule" class="schedule">
+        <h2>Agendamento</h2>
+        <div class="schedule-container">
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <button id="prevMonth">◀</button>
+                    <h3 id="currentMonth"></h3>
+                    <button id="nextMonth">▶</button>
+                </div>
+                <table class="calendar">
+                    <thead>
+                        <tr>
+                            <th>Dom</th>
+                            <th>Seg</th>
+                            <th>Ter</th>
+                            <th>Qua</th>
+                            <th>Qui</th>
+                            <th>Sex</th>
+                            <th>Sáb</th>
+                        </tr>
+                    </thead>
+                    <tbody id="calendarBody"></tbody>
+                </table>
+            </div>
+            
+            <div class="booking-form">
+                <h3>Agendar Serviço</h3>
+                <form id="bookingForm">
+                    <div class="form-group">
+                        <label for="serviceType">Tipo de Serviço:</label>
+                        <select id="serviceType" required>
+                            <option value="">Selecione...</option>
+                            <option value="curso">Curso/Palestra</option>
+                            <option value="medico">Consulta Médica</option>
+                            <option value="empresarial">Reunião Empresarial</option>
+                            <option value="evento">Evento ao Vivo</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="selectedDate">Data Selecionada:</label>
+                        <input type="text" id="selectedDate" readonly required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="timeSlot">Horário:</label>
+                        <select id="timeSlot" required>
+                            <option value="">Selecione...</option>
+                            <option value="08:00">08:00 - 09:00</option>
+                            <option value="09:00">09:00 - 10:00</option>
+                            <option value="10:00">10:00 - 11:00</option>
+                            <option value="11:00">11:00 - 12:00</option>
+                            <option value="13:00">13:00 - 14:00</option>
+                            <option value="14:00">14:00 - 15:00</option>
+                            <option value="15:00">15:00 - 16:00</option>
+                            <option value="16:00">16:00 - 17:00</option>
+                            <option value="17:00">17:00 - 18:00</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="clientName">Seu Nome:</label>
+                        <input type="text" id="clientName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="clientEmail">E-mail:</label>
+                        <input type="email" id="clientEmail" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="clientPhone">Telefone:</label>
+                        <input type="tel" id="clientPhone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="observations">Observações:</label>
+                        <textarea id="observations" rows="3"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Confirmar Agendamento</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Contato -->
+    <section id="contact" class="contact">
+        <h2>Contato</h2>
+        <div class="contact-container">
+            <div class="contact-info">
+                <h3>Informações de Contato</h3>
+                <p>📧 contato@librasinterprete.com.br</p>
+                <p>📱 (11) 99999-9999</p>
+                <p>📍 São Paulo - SP</p>
+                <p>🕐 Segunda a Sexta: 08:00 - 18:00</p>
+            </div>
+            <div class="contact-form">
+                <h3>Envie uma Mensagem</h3>
+                <form id="contactForm">
+                    <div class="form-group">
+                        <input type="text" placeholder="Seu Nome" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="Seu E-mail" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea placeholder="Sua Mensagem" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">Enviar Mensagem</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Libras Interprete - Todos os direitos reservados</p>
+        <p>🤟 Inclusão é o caminho!</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
