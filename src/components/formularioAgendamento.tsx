@@ -1,11 +1,33 @@
 'use client';
-import { useState } from 'react';
-// import Calendario from './calendario';
+import { useEffect, useState } from 'react';
+import Calendario from './calendario';
+
+const BOOKED_KEY = 'libras-booked-dates';
+const HORARIOS = [
+  '08:00 - 09:00',
+  '09:00 - 10:00',
+  '10:00 - 11:00',
+  '11:00 - 12:00',
+  '13:00 - 14:00',
+  '14:00 - 15:00',
+  '15:00 - 16:00',
+  '16:00 - 17:00',
+  '17:00 - 18:00',
+];
+
+function carregarDatas(): Set<string> {
+  try {
+    const bruto = localStorage.getItem(BOOKED_KEY);
+    if (!bruto) return new Set();
+    const lista = JSON.parse(bruto) as string[];
+    return new Set(Array.isArray(lista) ? lista : []);
+  } catch {
+    return new Set();
+  }
+}
 
 export default function FormularioAgendamento() {
-  const [bookedDates, setBookedDates] = useState<Set<string>>(
-    new Set(['2024-12-10', '2024-12-15', '2024-12-20'])
-  );
+  const [bookedDates, setBookedDates] = useState<Set<string>>(new Set());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [serviceType, setServiceType] = useState('');
   const [timeSlot, setTimeSlot] = useState('');
@@ -14,19 +36,28 @@ export default function FormularioAgendamento() {
   const [clientPhone, setClientPhone] = useState('');
   const [observations, setObservations] = useState('');
   const [enviando, setEnviando] = useState(false);
+  const [erro, setErro] = useState('');
+  const [sucesso, setSucesso] = useState('');
+
+  useEffect(() => {
+    setBookedDates(carregarDatas());
+  }, []);
 
   function dataFormatada(dataStr: string) {
     const [y, m, d] = dataStr.split('-');
-    return new Date(Number(y), Number(m) - 1, Number(d)).toLocaleDateString('pt-BR', {
-      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
-    });
+    return new Date(Number(y), Number(m) - 1, Number(d)).toLocaleDateString(
+      'pt-BR',
+      { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' },
+    );
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setErro('');
+    setSucesso('');
 
     if (!selectedDate) {
-      alert('Por favor, selecione uma data no calendário.');
+      setErro('Selecione uma data no calendário.');
       return;
     }
 
@@ -46,11 +77,19 @@ export default function FormularioAgendamento() {
         }),
       });
 
-      if (!res.ok) throw new Error('Falha ao salvar');
+      if (!res.ok) {
+        const payload = await res.json().catch(() => null);
+        throw new Error(payload?.error || 'Falha ao salvar');
+      }
 
-      alert(`✅ Agendamento confirmado para ${clientName}!\n\nData: ${dataFormatada(selectedDate)}\nHorário: ${timeSlot}`);
+      const atualizadas = new Set(bookedDates).add(selectedDate);
+      setBookedDates(atualizadas);
+      localStorage.setItem(BOOKED_KEY, JSON.stringify([...atualizadas]));
 
-      setBookedDates((prev) => new Set(prev).add(selectedDate));
+      setSucesso(
+        `Agendamento confirmado para ${clientName} em ${dataFormatada(selectedDate)}, ${timeSlot}.`,
+      );
+
       setSelectedDate(null);
       setServiceType('');
       setTimeSlot('');
@@ -60,53 +99,125 @@ export default function FormularioAgendamento() {
       setObservations('');
     } catch (err) {
       console.error(err);
-      alert('Erro ao confirmar agendamento. Tente novamente.');
+      setErro(
+        err instanceof Error
+          ? err.message
+          : 'Erro ao confirmar agendamento. Tente novamente.',
+      );
     } finally {
       setEnviando(false);
     }
   }
 
   return (
-    <div id="schedule">
-      {/* <Calendario bookedDates={bookedDates} selectedDate={selectedDate} onSelectDate={setSelectedDate} /> */}
+    <>
+      <Calendario
+        bookedDates={bookedDates}
+        selectedDate={selectedDate}
+        onSelectDate={(data) => {
+          setSelectedDate(data);
+          setErro('');
+          setSucesso('');
+        }}
+      />
 
-      <form onSubmit={handleSubmit}>
-        <label>Tipo de Serviço:</label>
-        <select value={serviceType} onChange={(e) => setServiceType(e.target.value)} required>
-          <option value="">Selecione...</option>
-          <option value="curso">Curso/Palestra</option>
-          <option value="consulta">Consulta Médica</option>
-          <option value="reuniao">Reunião Empresarial</option>
-          <option value="evento">Evento ao Vivo</option>
-        </select>
+      <form className="booking-form" onSubmit={handleSubmit}>
+        <h3>Dados do agendamento</h3>
 
-        <label>Data Selecionada:</label>
-        <input type="text" value={selectedDate ? dataFormatada(selectedDate) : ''} readOnly />
+        <div className="form-group">
+          <label htmlFor="serviceType">Tipo de serviço</label>
+          <select
+            id="serviceType"
+            value={serviceType}
+            onChange={(e) => setServiceType(e.target.value)}
+            required
+          >
+            <option value="">Selecione...</option>
+            <option value="curso">Curso/Palestra</option>
+            <option value="consulta">Consulta médica</option>
+            <option value="reuniao">Reunião empresarial</option>
+            <option value="evento">Evento ao vivo</option>
+          </select>
+        </div>
 
-        <label>Horário:</label>
-        <select value={timeSlot} onChange={(e) => setTimeSlot(e.target.value)} required>
-          <option value="">Selecione...</option>
-          {['08:00 - 09:00', '09:00 - 10:00', '10:00 - 11:00', '11:00 - 12:00',
-            '13:00 - 14:00', '14:00 - 15:00', '15:00 - 16:00', '16:00 - 17:00', '17:00 - 18:00'
-          ].map((h) => <option key={h} value={h}>{h}</option>)}
-        </select>
+        <div className="form-group">
+          <label htmlFor="selectedDate">Data selecionada</label>
+          <input
+            id="selectedDate"
+            type="text"
+            value={selectedDate ? dataFormatada(selectedDate) : ''}
+            placeholder="Clique em um dia livre no calendário"
+            readOnly
+          />
+        </div>
 
-        <label>Seu Nome:</label>
-        <input type="text" value={clientName} onChange={(e) => setClientName(e.target.value)} required />
+        <div className="form-group">
+          <label htmlFor="timeSlot">Horário</label>
+          <select
+            id="timeSlot"
+            value={timeSlot}
+            onChange={(e) => setTimeSlot(e.target.value)}
+            required
+          >
+            <option value="">Selecione...</option>
+            {HORARIOS.map((h) => (
+              <option key={h} value={h}>
+                {h}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <label>E-mail:</label>
-        <input type="email" value={clientEmail} onChange={(e) => setClientEmail(e.target.value)} required />
+        <div className="form-group">
+          <label htmlFor="clientName">Seu nome</label>
+          <input
+            id="clientName"
+            type="text"
+            value={clientName}
+            onChange={(e) => setClientName(e.target.value)}
+            required
+          />
+        </div>
 
-        <label>Telefone:</label>
-        <input type="tel" value={clientPhone} onChange={(e) => setClientPhone(e.target.value)} />
+        <div className="form-group">
+          <label htmlFor="clientEmail">E-mail</label>
+          <input
+            id="clientEmail"
+            type="email"
+            value={clientEmail}
+            onChange={(e) => setClientEmail(e.target.value)}
+            required
+          />
+        </div>
 
-        <label>Observações:</label>
-        <textarea value={observations} onChange={(e) => setObservations(e.target.value)} />
+        <div className="form-group">
+          <label htmlFor="clientPhone">Telefone</label>
+          <input
+            id="clientPhone"
+            type="tel"
+            value={clientPhone}
+            onChange={(e) => setClientPhone(e.target.value)}
+            placeholder="(11) 99999-9999"
+          />
+        </div>
 
-        <button type="submit" disabled={enviando}>
-          {enviando ? 'Enviando...' : 'Confirmar Agendamento'}
+        <div className="form-group">
+          <label htmlFor="observations">Observações</label>
+          <textarea
+            id="observations"
+            rows={3}
+            value={observations}
+            onChange={(e) => setObservations(e.target.value)}
+          />
+        </div>
+
+        <button className="btn-primary" type="submit" disabled={enviando}>
+          {enviando ? 'Enviando...' : 'Confirmar agendamento'}
         </button>
+
+        {erro ? <p className="form-feedback error">{erro}</p> : null}
+        {sucesso ? <p className="form-feedback success">{sucesso}</p> : null}
       </form>
-    </div>
+    </>
   );
 }

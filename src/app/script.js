@@ -155,7 +155,7 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
     console.log('Dados do agendamento:', formData);
     
     // Simular envio
-    alert(`✅ Agendamento confirmado para ${clientName}!\n\nData: ${document.getElementById('selectedDate').value}\nHorário: ${timeSlot}\nServiço: ${serviceType}`);
+    alert(`Agendamento confirmado para ${clientName}!\n\nData: ${document.getElementById('selectedDate').value}\nHorário: ${timeSlot}\nServiço: ${serviceType}`);
     
     // Adicionar ao calendário como agendado
     bookedDates.add(selectedDate);
