@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Libras Interprete
 
-## Getting Started
+Site para agendar interpretação em Libras. A página pública apresenta os serviços e o contato. Clientes autenticados reservam horários; intérpretes acompanham a agenda e os clientes no painel.
 
-First, run the development server:
+## Papéis
+
+O cadastro público cria sempre um perfil `cliente`. O papel `interprete` é atribuído no banco, na tabela `perfis`. Usuário com `role` `admin` no Neon Auth também entra como intérprete.
+
+| Papel | Destino após o login | O que pode fazer |
+| --- | --- | --- |
+| `cliente` | `/conta` | Agendar e ver os próprios horários |
+| `interprete` | `/painel` | Ver toda a agenda e o resumo de clientes |
+
+Cada horário (data + faixa) só pode ser reservado uma vez.
+
+## Rotas
+
+| Rota | Acesso |
+| --- | --- |
+| `/` | Público. Serviços, agendamento e contato |
+| `/entrar` | Login |
+| `/cadastro` | Criação de conta de cliente |
+| `/conta` | Cliente autenticado |
+| `/painel` | Intérprete autenticado |
+| `/api/agendamento` | Leitura dos horários ocupados e criação de reserva (cliente) |
+| `/api/auth/[...path]` | Rotas do Neon Auth |
+
+`/conta` e `/painel` exigem sessão. Quem não tem o papel da rota é enviado para a área correspondente.
+
+## Serviços agendáveis
+
+- Curso ou palestra
+- Consulta médica
+- Reunião empresarial
+- Evento ao vivo
+
+Horários de 08:00 às 12:00 e de 13:00 às 18:00, em faixas de uma hora.
+
+## Stack
+
+- Next.js 16 (App Router) e React 19
+- Tailwind CSS 4 e componentes shadcn
+- Neon Postgres com Drizzle ORM
+- Neon Auth (Better Auth)
+- VLibras na interface
+
+## Configuração
+
+Requisitos: Node.js e um projeto Neon com Auth habilitado.
+
+Variáveis em `.env`:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+DATABASE_URL=
+DATABASE_URL_UNPOOLED=
+NEON_AUTH_BASE_URL=
+NEON_AUTH_COOKIE_SECRET=
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`DATABASE_URL` é a conexão usada pela aplicação. `DATABASE_URL_UNPOOLED` é a conexão direta usada pelo Drizzle Kit nas migrações.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run db:migrate
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+O servidor de desenvolvimento fica em [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+| Comando | Uso |
+| --- | --- |
+| `npm run dev` | Servidor de desenvolvimento |
+| `npm run build` | Build de produção |
+| `npm run start` | Servidor de produção |
+| `npm run lint` | ESLint |
+| `npm run db:generate` | Gera uma migração a partir de `src/db/schema.ts` |
+| `npm run db:migrate` | Aplica as migrações em `drizzle/` |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Banco
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Duas tabelas da aplicação, em `src/db/schema.ts`:
 
-## Deploy on Vercel
+- `perfis` — usuário do Neon Auth, nome, e-mail e papel
+- `agendamentos` — tipo, data, horário, contato e observações, sempre ligados a um `user_id`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+As migrações ficam em `drizzle/`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Imagens do carrossel
+
+Os slides da página inicial ficam em `public/carrossel/` e a lista em `src/data/carrossel.ts`. O passo a passo está em `public/carrossel/README.md`.
