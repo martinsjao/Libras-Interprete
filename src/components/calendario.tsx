@@ -1,127 +1,99 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo } from 'react';
+import { ptBR } from 'date-fns/locale';
+import { Calendar } from '@/components/ui/calendar';
 
 type CalendarioProps = {
-  bookedDates: Set<string>;
+  /** Datas sem nenhum horário livre. */
+  datasLotadas: Set<string>;
+  /** Datas com ao menos um horário ocupado (mas ainda com vagas). */
+  datasParciais: Set<string>;
   selectedDate: string | null;
   onSelectDate: (date: string) => void;
 };
 
-function toISO(year: number, month: number, day: number) {
-  return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+function toISO(date: Date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 }
 
-function hojeISO() {
-  const t = new Date();
-  return toISO(t.getFullYear(), t.getMonth(), t.getDate());
+function parseISO(dateStr: string) {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function startOfToday() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return today;
 }
 
 export default function Calendario({
-  bookedDates,
+  datasLotadas,
+  datasParciais,
   selectedDate,
   onSelectDate,
 }: CalendarioProps) {
-  const [cursor, setCursor] = useState(() => {
-    const n = new Date();
-    return new Date(n.getFullYear(), n.getMonth(), 1);
-  });
-
-  const year = cursor.getFullYear();
-  const month = cursor.getMonth();
-  const firstWeekday = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const hoje = hojeISO();
-
-  const cells: Array<{ day: number | null; date?: string }> = [];
-  for (let i = 0; i < firstWeekday; i++) cells.push({ day: null });
-  for (let d = 1; d <= daysInMonth; d++) {
-    cells.push({ day: d, date: toISO(year, month, d) });
-  }
-  while (cells.length % 7 !== 0) cells.push({ day: null });
-
-  const weeks: (typeof cells)[] = [];
-  for (let i = 0; i < cells.length; i += 7) {
-    weeks.push(cells.slice(i, i + 7));
-  }
-
-  const titulo = cursor.toLocaleDateString('pt-BR', {
-    month: 'long',
-    year: 'numeric',
-  });
+  const today = useMemo(() => startOfToday(), []);
+  const lotadas = useMemo(
+    () => Array.from(datasLotadas).map(parseISO),
+    [datasLotadas],
+  );
+  const selected = selectedDate ? parseISO(selectedDate) : undefined;
 
   return (
-    <div className="calendar-container">
-      <div className="calendar-header">
-        <button
-          type="button"
-          aria-label="Mês anterior"
-          onClick={() => setCursor(new Date(year, month - 1, 1))}
-        >
-          ‹
-        </button>
-        <h3 className="calendar-month">{titulo}</h3>
-        <button
-          type="button"
-          aria-label="Próximo mês"
-          onClick={() => setCursor(new Date(year, month + 1, 1))}
-        >
-          ›
-        </button>
-      </div>
+    <div className="flex flex-col gap-4">
+      <Calendar
+        mode="single"
+        locale={ptBR}
+        selected={selected}
+        onSelect={(date) => {
+          if (date) onSelectDate(toISO(date));
+        }}
+        disabled={[{ before: today }, ...lotadas]}
+        modifiers={{
+          lotado: lotadas,
+          parcial: (date) => {
+            const iso = toISO(date);
+            return (
+              date >= today &&
+              datasParciais.has(iso) &&
+              !datasLotadas.has(iso)
+            );
+          },
+          livre: (date) => {
+            const iso = toISO(date);
+            return (
+              date >= today &&
+              !datasLotadas.has(iso) &&
+              !datasParciais.has(iso)
+            );
+          },
+        }}
+        modifiersClassNames={{
+          lotado: 'bg-unavailable text-unavailable-text opacity-100',
+          parcial: 'bg-accent text-accent-foreground',
+          livre: 'bg-available text-foreground',
+        }}
+        className="w-full [--cell-size:--spacing(9)]"
+      />
 
-      <table className="calendar">
-        <thead>
-          <tr>
-            {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((dia) => (
-              <th key={dia}>{dia}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {weeks.map((week, wi) => (
-            <tr key={wi}>
-              {week.map((cell, di) => {
-                if (!cell.day || !cell.date) {
-                  return <td key={di} className="empty" />;
-                }
-
-                const passada = cell.date < hoje;
-                const ocupada = bookedDates.has(cell.date);
-                const indisponivel = passada || ocupada;
-                const selecionada = selectedDate === cell.date;
-
-                let className = 'available';
-                if (indisponivel) className = 'unavailable';
-                if (selecionada) className = 'selected';
-
-                return (
-                  <td
-                    key={cell.date}
-                    className={className}
-                    aria-current={cell.date === hoje ? 'date' : undefined}
-                    onClick={() => {
-                      if (!indisponivel) onSelectDate(cell.date!);
-                    }}
-                  >
-                    {cell.day}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <ul className="calendar-legend">
-        <li>
-          <span className="dot available" /> Livre
+      <ul className="flex list-none flex-wrap gap-4 text-sm text-muted-foreground">
+        <li className="flex items-center gap-2">
+          <span className="size-3 rounded-full bg-available ring-1 ring-border" />
+          Livre
         </li>
-        <li>
-          <span className="dot selected" /> Selecionado
+        <li className="flex items-center gap-2">
+          <span className="size-3 rounded-full bg-accent ring-1 ring-border" />
+          Com vagas
         </li>
-        <li>
-          <span className="dot unavailable" /> Indisponível
+        <li className="flex items-center gap-2">
+          <span className="size-3 rounded-full bg-primary" />
+          Selecionado
+        </li>
+        <li className="flex items-center gap-2">
+          <span className="size-3 rounded-full bg-unavailable ring-1 ring-border" />
+          Lotado
         </li>
       </ul>
     </div>

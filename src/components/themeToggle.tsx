@@ -13,16 +13,11 @@ function aplicarTema(escuro: boolean) {
 
 export default function ThemeToggle() {
   const [escuro, setEscuro] = useState(false);
-  const [pronto, setPronto] = useState(false);
+  const [montado, setMontado] = useState(false);
 
   useEffect(() => {
-    const salvo = localStorage.getItem(STORAGE_KEY);
-    const inicial =
-      salvo === 'dark' ||
-      (salvo !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    setEscuro(inicial);
-    aplicarTema(inicial);
-    setPronto(true);
+    setEscuro(document.documentElement.classList.contains('dark'));
+    setMontado(true);
   }, []);
 
   function alternar() {
@@ -38,9 +33,8 @@ export default function ThemeToggle() {
       onClick={alternar}
       aria-label={escuro ? 'Ativar modo claro' : 'Ativar modo escuro'}
       title={escuro ? 'Modo claro' : 'Modo escuro'}
-      disabled={!pronto}
     >
-      {escuro ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
+      {montado && escuro ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
     </button>
   );
 }

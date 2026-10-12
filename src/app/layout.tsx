@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
+import VLibras from "@/src/components/vlibras";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="pt-BR"
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
@@ -33,6 +35,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {temaInicial}
         </Script>
         {children}
+        <VLibras />
       </body>
     </html>
   );
