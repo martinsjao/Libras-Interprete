@@ -17,10 +17,6 @@ export function mensagemAuth(message: string | undefined, fallback: string) {
     return 'A senha precisa ter pelo menos 8 caracteres.';
   }
 
-  if (texto.includes('invalid origin') || texto.includes('invalid domain')) {
-    return 'Não foi possível entrar a partir deste endereço.';
-  }
-
   return message || fallback;
 }
 
