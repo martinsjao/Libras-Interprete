@@ -44,6 +44,19 @@ export function chaveSlot(data: string, horario: string) {
   return `${data}|${horario}`;
 }
 
+export function formatarTelefone(valor: string) {
+  const digitos = valor.replace(/\D/g, '').slice(0, 11);
+  if (digitos.length <= 2) return digitos ? `(${digitos}` : '';
+
+  const ddd = digitos.slice(0, 2);
+  const numero = digitos.slice(2);
+  const tamanhoLocal = digitos.length > 10 ? 5 : 4;
+  const parteInicial = numero.slice(0, tamanhoLocal);
+  const parteFinal = numero.slice(tamanhoLocal);
+
+  return `(${ddd}) ${parteInicial}${parteFinal ? `-${parteFinal}` : ''}`;
+}
+
 function minutosHorario(horario: string) {
   const [hora, minuto] = horario.split(':').map(Number);
   return hora * 60 + minuto;

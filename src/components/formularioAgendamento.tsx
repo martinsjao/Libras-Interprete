@@ -28,6 +28,7 @@ import {
   TIPOS_SERVICO,
   dataFormatadaLonga,
   datasLotadas,
+  formatarTelefone,
   intervalosConflitam,
   montarMapaHorarios,
   type SlotOcupado,
@@ -383,8 +384,10 @@ export default function FormularioAgendamento({
                 <Input
                   id="clientPhone"
                   type="tel"
+                  inputMode="numeric"
+                  maxLength={15}
                   value={clientPhone}
-                  onChange={(e) => setClientPhone(e.target.value)}
+                  onChange={(e) => setClientPhone(formatarTelefone(e.target.value))}
                   placeholder="(11) 99999-9999"
                 />
               </Field>
