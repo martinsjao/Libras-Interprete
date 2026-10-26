@@ -10,6 +10,16 @@ export const HORARIOS = [
   '17:00 - 18:00',
 ] as const;
 
+const partesHorarios = HORARIOS.map((horario) => horario.split(' - '));
+
+export const HORARIOS_INICIO = [
+  ...new Set(partesHorarios.map(([inicio]) => inicio)),
+];
+
+export const HORARIOS_FIM = [
+  ...new Set(partesHorarios.map(([, fim]) => fim)),
+];
+
 export type Horario = (typeof HORARIOS)[number];
 
 export const TIPOS_SERVICO = [
@@ -32,6 +42,30 @@ export function rotuloTipo(tipo: string) {
 
 export function chaveSlot(data: string, horario: string) {
   return `${data}|${horario}`;
+}
+
+function minutosHorario(horario: string) {
+  const [hora, minuto] = horario.split(':').map(Number);
+  return hora * 60 + minuto;
+}
+
+export function intervaloValido(horario: string) {
+  const [inicio, fim] = horario.split(' - ');
+  return (
+    HORARIOS_INICIO.includes(inicio) &&
+    HORARIOS_FIM.includes(fim) &&
+    minutosHorario(inicio) < minutosHorario(fim)
+  );
+}
+
+export function intervalosConflitam(primeiro: string, segundo: string) {
+  const [inicioPrimeiro, fimPrimeiro] = primeiro.split(' - ');
+  const [inicioSegundo, fimSegundo] = segundo.split(' - ');
+
+  return (
+    minutosHorario(inicioPrimeiro) < minutosHorario(fimSegundo) &&
+    minutosHorario(inicioSegundo) < minutosHorario(fimPrimeiro)
+  );
 }
 
 export function montarMapaHorarios(slots: SlotOcupado[]) {
