@@ -14,7 +14,8 @@
 
 ## Handoff
 
-- Feature: `a11y-painel-tailwind`
-- Phase: Execute — tasks approved; awaiting sub-agent vs inline choice
-- Next: user picks sub-agents or inline → start T1
-- Branch: current
+- Feature: `a11y-painel-tailwind` — **DONE**
+- HEAD: `7fae78c` (+ docs commit for verification)
+- Proofs: 20 pass; mutations 3/3 killed; `validate_verification` 0 errors
+- Tests: `npx vitest run` — 28 passed
+- Next: optional push (needs explicit go-ahead); e2e Playwright deferred (AD-002)
