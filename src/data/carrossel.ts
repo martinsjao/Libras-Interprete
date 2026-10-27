@@ -10,15 +10,15 @@ export type SlideCarrossel = {
 
 export const slidesCarrossel: SlideCarrossel[] = [
   {
-    src: '/carrossel/slide-1.jpg',
-    alt: 'Interpretação em Libras em eventos e cursos',
+    src: "/carrossel/slide-1.jpg",
+    alt: "Interpretação em Libras em eventos e cursos",
   },
   {
-    src: '/carrossel/slide-2.svg',
-    alt: 'Acompanhamento em consultas e reuniões',
+    src: "/carrossel/slide-2.webp",
+    alt: "Acompanhamento em consultas e reuniões",
   },
   {
-    src: '/carrossel/slide-3.svg',
-    alt: 'Comunicação acessível para todos',
+    src: "/carrossel/slide-3.webp",
+    alt: "Comunicação acessível para todos",
   },
 ];
