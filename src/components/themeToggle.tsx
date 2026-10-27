@@ -16,6 +16,8 @@ export default function ThemeToggle() {
   const [montado, setMontado] = useState(false);
 
   useEffect(() => {
+    // Hydrate from DOM theme set by beforeInteractive script (SSR-safe).
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- client sync after mount
     setEscuro(document.documentElement.classList.contains('dark'));
     setMontado(true);
   }, []);
