@@ -205,15 +205,16 @@ T7 → T8 → T9 → T10 → T11 → T12
 
 **Done when**:
 
-- [ ] Logo/marca não usa `h1`
-- [ ] `{titulo}` é `h1`
-- [ ] Landmarks `header`/`nav`/`main` mantidos
-- [ ] Sem classe `logo-icon` / `logo` de estilo legado
-- [ ] Teste RTL conta um `h1` com o título
-- [ ] Gate quick passa
+- [x] Logo/marca não usa `h1`
+- [x] `{titulo}` é `h1`
+- [x] Landmarks `header`/`nav`/`main` mantidos
+- [x] Sem classe `logo-icon` / `logo` de estilo legado
+- [x] Teste RTL conta um `h1` com o título
+- [x] Gate quick passa
 
 **Tests**: unit
 **Gate**: quick
+**Status**: ✅ Complete
 
 ---
 
