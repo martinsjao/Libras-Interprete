@@ -310,13 +310,14 @@ T7 → T8 → T9 → T10 → T11 → T12
 
 **Done when**:
 
-- [ ] Regras de `auth-*`, `form-group`, `btn-primary`, `theme-toggle`, hero/services legado não usadas removidas
-- [ ] Tokens preservados
-- [ ] `src/lib/legacy-css.test.ts` grepa `src/**/*.{tsx,ts}` e falha se achar a lista TW-01
-- [ ] Gate build passa
+- [x] Regras de `auth-*`, `form-group`, `btn-primary`, `theme-toggle`, hero/services legado não usadas removidas
+- [x] Tokens preservados
+- [x] `src/lib/legacy-css.test.ts` grepa `src/**/*.{tsx,ts}` e falha se achar a lista TW-01
+- [x] Gate build passa
 
 **Tests**: unit
 **Gate**: build
+**Status**: ✅ Complete
 
 ---
 
@@ -380,4 +381,4 @@ Proof: `npx vitest run src/components/carrosselImagens.test.tsx -t "aria-live"`
 
 ## Handoff
 
-**Dispatched:** Batch A (phases 1–3, T1–T7) — returned
+**Dispatched:** Batch B (phase 4, T8–T12) — returned

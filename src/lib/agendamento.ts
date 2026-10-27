@@ -142,7 +142,7 @@ export function filtrarAgenda<T extends ItemAgendamento>(
   busca: string,
 ) {
   const hoje = hojeISO();
-  let resultado =
+  const resultado =
     filtro === 'hoje'
       ? itens.filter((item) => item.data === hoje)
       : filtro === 'proximos'
