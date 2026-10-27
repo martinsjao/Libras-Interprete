@@ -376,4 +376,4 @@ Proof: `npx vitest run src/components/carrosselImagens.test.tsx -t "aria-live"`
 
 ## Handoff
 
-**Dispatched:** Batch A (phases 1–3, T1–T7) — T1 done by orchestrator after lint/vitest unblock; resumed for T2–T7
+**Dispatched:** Batch A (phases 1–3, T1–T7) — returned
