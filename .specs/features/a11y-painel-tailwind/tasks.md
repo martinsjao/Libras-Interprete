@@ -162,14 +162,15 @@ T7 → T8 → T9 → T10 → T11 → T12
 
 **Done when**:
 
-- [ ] Seção "Próximos" distinta; filtros Hoje/Próximos/Todos; campo busca
-- [ ] Totais ignoram filtro/busca
-- [ ] Estado vazio quando filtro/busca zera
-- [ ] `src/components/painelAdmin.test.tsx` cobre filtro e busca básicos
-- [ ] Gate full passa
+- [x] Seção "Próximos" distinta; filtros Hoje/Próximos/Todos; campo busca
+- [x] Totais ignoram filtro/busca
+- [x] Estado vazio quando filtro/busca zera
+- [x] `src/components/painelAdmin.test.tsx` cobre filtro e busca básicos
+- [x] Gate full passa
 
 **Tests**: unit
 **Gate**: full
+**Status**: ✅ Complete
 
 ---
 

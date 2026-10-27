@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import {
   CalendarCheckIcon,
   CalendarClockIcon,
@@ -7,6 +10,7 @@ import ListaAgendamentos, {
   type ItemAgendamento,
 } from '@/src/components/listaAgendamentos';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -21,6 +25,8 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from '@/components/ui/empty';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Table,
   TableBody,
@@ -29,7 +35,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { hojeISO } from '@/src/lib/agendamento';
+import {
+  filtrarAgenda,
+  hojeISO,
+  proximosDe,
+  type FiltroAgenda,
+} from '@/src/lib/agendamento';
 
 export type ClienteResumo = {
   userId: string;
@@ -38,6 +49,12 @@ export type ClienteResumo = {
   total: number;
 };
 
+const FILTROS: { valor: FiltroAgenda; rotulo: string }[] = [
+  { valor: 'hoje', rotulo: 'Hoje' },
+  { valor: 'proximos', rotulo: 'Próximos' },
+  { valor: 'todos', rotulo: 'Todos' },
+];
+
 export default function PainelAdmin({
   agendamentos,
   clientes,
@@ -45,10 +62,14 @@ export default function PainelAdmin({
   agendamentos: ItemAgendamento[];
   clientes: ClienteResumo[];
 }) {
+  const [filtro, setFiltro] = useState<FiltroAgenda>('todos');
+  const [busca, setBusca] = useState('');
+
   const hoje = hojeISO();
-  const proximos = agendamentos.filter((item) => item.data >= hoje).length;
+  const proximos = proximosDe(agendamentos, hoje);
   const totalClientes = clientes.length;
   const totalAgendamentos = agendamentos.length;
+  const agendaFiltrada = filtrarAgenda(agendamentos, filtro, busca);
 
   return (
     <div className="flex flex-col gap-6">
@@ -61,7 +82,10 @@ export default function PainelAdmin({
                 {totalAgendamentos}
               </CardTitle>
             </div>
-            <CalendarCheckIcon className="text-muted-foreground size-5" />
+            <CalendarCheckIcon
+              className="text-muted-foreground size-5"
+              aria-hidden="true"
+            />
           </CardHeader>
         </Card>
         <Card>
@@ -72,19 +96,43 @@ export default function PainelAdmin({
                 {totalClientes}
               </CardTitle>
             </div>
-            <UsersIcon className="text-muted-foreground size-5" />
+            <UsersIcon
+              className="text-muted-foreground size-5"
+              aria-hidden="true"
+            />
           </CardHeader>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between gap-2">
             <div className="flex flex-col gap-1">
               <CardDescription>Próximos</CardDescription>
-              <CardTitle className="text-3xl tabular-nums">{proximos}</CardTitle>
+              <CardTitle className="text-3xl tabular-nums">
+                {proximos.length}
+              </CardTitle>
             </div>
-            <CalendarClockIcon className="text-muted-foreground size-5" />
+            <CalendarClockIcon
+              className="text-muted-foreground size-5"
+              aria-hidden="true"
+            />
           </CardHeader>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Próximos</CardTitle>
+          <CardDescription>
+            Horários de hoje em diante, em destaque.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ListaAgendamentos
+            itens={proximos}
+            mostrarCliente
+            vazio="Nenhum agendamento próximo."
+          />
+        </CardContent>
+      </Card>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
@@ -144,11 +192,39 @@ export default function PainelAdmin({
               Todos os horários reservados, ordenados por data.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex flex-col gap-4">
+            <div
+              className="flex flex-wrap gap-2"
+              role="group"
+              aria-label="Filtro da agenda"
+            >
+              {FILTROS.map(({ valor, rotulo }) => (
+                <Button
+                  key={valor}
+                  type="button"
+                  size="sm"
+                  variant={filtro === valor ? 'default' : 'outline'}
+                  onClick={() => setFiltro(valor)}
+                  aria-pressed={filtro === valor}
+                >
+                  {rotulo}
+                </Button>
+              ))}
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="busca-agenda">Buscar por nome ou e-mail</Label>
+              <Input
+                id="busca-agenda"
+                type="search"
+                value={busca}
+                onChange={(e) => setBusca(e.target.value)}
+                placeholder="Nome ou e-mail"
+              />
+            </div>
             <ListaAgendamentos
-              itens={agendamentos}
+              itens={agendaFiltrada}
               mostrarCliente
-              vazio="Nenhum agendamento registrado ainda."
+              vazio="Nenhum agendamento corresponde ao filtro ou busca."
             />
           </CardContent>
         </Card>
