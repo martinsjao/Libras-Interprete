@@ -19,6 +19,8 @@
   --muted-foreground: #64748b;
   --accent: #e3f2fd;
   --accent-foreground: #1565c0;
+  --warning: #dcbe6d;
+  --warning-foreground: #713f12;
   --destructive: #b71c1c;
   --border: #dbe4ee;
   --input: #dbe4ee;
@@ -72,6 +74,8 @@
   --muted-foreground: #94a3b8;
   --accent: #1a334d;
   --accent-foreground: #90caf9;
+  --warning: #eab308;
+  --warning-foreground: #eeab77;
   --destructive: #ef9a9a;
   --border: #2a3b55;
   --input: #2a3b55;
@@ -136,6 +140,8 @@
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning: var(--warning);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -570,7 +576,9 @@ html.dark .nav-links .btn-nav:hover {
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
-  transition: background 0.3s, transform 0.2s;
+  transition:
+    background 0.3s,
+    transform 0.2s;
 }
 
 html.dark .btn-primary {
@@ -701,7 +709,9 @@ html.dark .calendar-header button {
   padding: 0.65rem 0.4rem;
   cursor: pointer;
   border-radius: 8px;
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 
 .calendar td:hover:not(.empty):not(.unavailable) {
@@ -877,8 +887,9 @@ footer p {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-family: var(--font-geist-sans), "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    @apply bg-background font-sans text-foreground antialiased;
+    font-family:
+      var(--font-geist-sans), "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
   }
   html {
