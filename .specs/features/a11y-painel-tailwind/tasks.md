@@ -122,11 +122,12 @@ T7 → T8 → T9 → T10 → T11 → T12
 
 **Done when**:
 
-- [ ] Testes para `rotuloTipo`, `formatarTelefone`, `intervaloValido`, `intervalosConflitam`, `hojeISO` (ou equivalentes exportados)
-- [ ] Gate quick passa
+- [x] Testes para `rotuloTipo`, `formatarTelefone`, `intervaloValido`, `intervalosConflitam`, `hojeISO` (ou equivalentes exportados)
+- [x] Gate quick passa
 
 **Tests**: unit
 **Gate**: quick
+**Status**: ✅ Complete
 
 ---
 
