@@ -62,7 +62,10 @@ describe('AreaLogada', () => {
       </AreaLogada>,
     );
 
-    const hidden = container.querySelectorAll('[aria-hidden="true"]');
-    expect(hidden.length).toBeGreaterThan(0);
+    const brandLink = screen.getByRole('link', { name: /libras interprete/i });
+    const icon = brandLink.querySelector('svg');
+    expect(icon).not.toBeNull();
+    expect(icon).toHaveAttribute('aria-hidden', 'true');
+    expect(container.querySelectorAll('[aria-hidden="true"]').length).toBeGreaterThan(0);
   });
 });

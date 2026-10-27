@@ -62,5 +62,18 @@ describe('legacy CSS / TW-01', () => {
     expect(css).toMatch(/--primary\s*:/);
     expect(css).toMatch(/\.dark\s*\{/);
     expect(css).toMatch(/@theme\s+inline/);
+
+    const orphans = [
+      '.auth-shell',
+      '.auth-main',
+      '.auth-card',
+      '.form-group',
+      '.btn-primary',
+      '.theme-toggle',
+      '.logo-icon',
+    ];
+    for (const sel of orphans) {
+      expect(css).not.toContain(sel);
+    }
   });
 });

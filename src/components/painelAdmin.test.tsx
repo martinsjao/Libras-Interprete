@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import PainelAdmin from '@/src/components/painelAdmin';
@@ -47,6 +47,7 @@ function valorDoTotal(rotulo: string) {
 
 describe('PainelAdmin', () => {
   afterEach(() => {
+    cleanup();
     vi.useRealTimers();
   });
 
@@ -87,6 +88,25 @@ describe('PainelAdmin', () => {
       screen.getByLabelText(/buscar por nome ou e-mail/i),
       'inexistente',
     );
+
+    expect(
+      screen.getByText(
+        'Nenhum agendamento corresponde ao filtro ou busca.',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('vazio quando filtro Hoje não tem itens no dia', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    vi.setSystemTime(new Date(2026, 9, 29, 12, 0, 0));
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+
+    render(
+      <PainelAdmin agendamentos={agendamentos} clientes={clientes} />,
+    );
+
+    const filtros = screen.getByRole('group', { name: 'Filtro da agenda' });
+    await user.click(within(filtros).getByRole('button', { name: 'Hoje' }));
 
     expect(
       screen.getByText(
