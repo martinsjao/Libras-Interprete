@@ -1,5 +1,9 @@
 'use client';
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 export default function FormularioContato() {
   const [nome, setNome] = useState('');
@@ -16,53 +20,56 @@ export default function FormularioContato() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="form-group">
-        <label htmlFor="contatoNome">Nome</label>
-        <input
-          id="contatoNome"
-          placeholder="Seu nome"
-          value={nome}
-          onChange={(e) => {
-            setNome(e.target.value);
-            setEnviado(false);
-          }}
-          required
-        />
-      </div>
-      <div className="form-group">
-        <label htmlFor="contatoEmail">E-mail</label>
-        <input
-          id="contatoEmail"
-          type="email"
-          placeholder="voce@email.com"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            setEnviado(false);
-          }}
-          required
-        />
-      </div>
-      <div className="form-group">
-        <label htmlFor="contatoMensagem">Mensagem</label>
-        <textarea
-          id="contatoMensagem"
-          rows={4}
-          placeholder="Como podemos ajudar?"
-          value={mensagem}
-          onChange={(e) => {
-            setMensagem(e.target.value);
-            setEnviado(false);
-          }}
-          required
-        />
-      </div>
-      <button className="btn-primary" type="submit">
-        Enviar mensagem
-      </button>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      <FieldGroup>
+        <Field>
+          <FieldLabel htmlFor="contatoNome">Nome</FieldLabel>
+          <Input
+            id="contatoNome"
+            placeholder="Seu nome"
+            value={nome}
+            onChange={(e) => {
+              setNome(e.target.value);
+              setEnviado(false);
+            }}
+            required
+          />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="contatoEmail">E-mail</FieldLabel>
+          <Input
+            id="contatoEmail"
+            type="email"
+            placeholder="voce@email.com"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setEnviado(false);
+            }}
+            required
+          />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="contatoMensagem">Mensagem</FieldLabel>
+          <Textarea
+            id="contatoMensagem"
+            rows={4}
+            placeholder="Como podemos ajudar?"
+            value={mensagem}
+            onChange={(e) => {
+              setMensagem(e.target.value);
+              setEnviado(false);
+            }}
+            required
+          />
+        </Field>
+      </FieldGroup>
+      <Button type="submit">Enviar mensagem</Button>
       {enviado ? (
-        <p className="form-feedback success">
+        <p
+          role="status"
+          className="rounded-lg bg-[var(--success-bg)] px-4 py-3 font-medium text-[var(--success-text)]"
+        >
           Mensagem enviada com sucesso! Entraremos em contato em breve.
         </p>
       ) : null}
