@@ -1,6 +1,6 @@
 # painel-abas-filtros proofs
 
-**HEAD**: f679a1f
+**HEAD**: 7fcdf84
 **Tree**: clean
 **Result**: 15 pass, 0 fail; mutations 3 killed, 0 not
 
@@ -16,7 +16,7 @@
 | C8 | `npx vitest run src/components/painelAdmin.test.tsx -t "recolher filtros"` | 1 | 1 | pass |
 | C9 | `npx vitest run src/components/painelAdmin.test.tsx -t "expandir filtros"` | 1 | 1 | pass |
 | C10 | `npx vitest run src/components/painelAdmin.test.tsx -t "nome acessível filtros"` | 1 | 1 | pass |
-| C11 | `npx vitest run src/lib/agendamento.test.ts -t "filtro|busca"` | 4 | 4 | pass |
+| C11 | `npx vitest run src/lib/agendamento.test.ts` | 10 | 10 | pass |
 | C12 | `npx vitest run src/components/painelAdmin.test.tsx -t "totais"` | 1 | 1 | pass |
 | Build | `npm run build` | - | - | pass |
 | Build | `npm run lint` | - | - | pass |

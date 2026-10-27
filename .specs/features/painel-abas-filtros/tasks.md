@@ -153,7 +153,7 @@ Proof: `npx vitest run src/components/painelAdmin.test.tsx -t "expandir filtros"
 Proof: `npx vitest run src/components/painelAdmin.test.tsx -t "nome acessível filtros"`
 
 **C11** - Filtros Hoje/Próximos/Todos e busca batem com ADM (FIL-06, AC 6)
-Proof: `npx vitest run src/lib/agendamento.test.ts -t "filtro|busca"`
+Proof: `npx vitest run src/lib/agendamento.test.ts`
 
 **C12** - Totais no Analítico usam conjunto completo (FIL-07, AC 7)
 Proof: `npx vitest run src/components/painelAdmin.test.tsx -t "totais"`
