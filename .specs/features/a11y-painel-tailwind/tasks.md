@@ -249,12 +249,13 @@ T7 → T8 → T9 → T10 → T11 → T12
 
 **Done when**:
 
-- [ ] Classes legadas removidas; labels; erro `role="alert"`
-- [ ] Teste mínimo espelhando T8
-- [ ] Gate full passa
+- [x] Classes legadas removidas; labels; erro `role="alert"`
+- [x] Teste mínimo espelhando T8
+- [x] Gate full passa
 
 **Tests**: unit
 **Gate**: full
+**Status**: ✅ Complete
 
 ---
 
