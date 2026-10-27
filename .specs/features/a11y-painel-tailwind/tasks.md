@@ -228,13 +228,14 @@ T7 → T8 → T9 → T10 → T11 → T12
 
 **Done when**:
 
-- [ ] Sem `auth-shell`, `auth-main`, `auth-card`, `form-group`, `btn-primary`, `form-feedback`, `logo-icon`
-- [ ] Labels nos campos; erro com `role="alert"`
-- [ ] Teste mínimo de presença de labels + role alert quando há erro (ou assert de estrutura)
-- [ ] Gate full passa
+- [x] Sem `auth-shell`, `auth-main`, `auth-card`, `form-group`, `btn-primary`, `form-feedback`, `logo-icon`
+- [x] Labels nos campos; erro com `role="alert"`
+- [x] Teste mínimo de presença de labels + role alert quando há erro (ou assert de estrutura)
+- [x] Gate full passa
 
 **Tests**: unit
 **Gate**: full
+**Status**: ✅ Complete
 
 ---
 
