@@ -93,6 +93,105 @@ describe('PainelAdmin', () => {
     ).toBeUndefined();
   });
 
+  it('filtros acima de Próximos e listagem', () => {
+    render(
+      <PainelAdmin agendamentos={agendamentos} clientes={clientes} />,
+    );
+
+    const filtros = screen.getByRole('group', { name: 'Filtro da agenda' });
+    const proximos = screen.getByText(
+      'Horários de hoje em diante, em destaque.',
+    );
+    const agenda = screen.getByText('Agenda completa');
+
+    expect(
+      filtros.compareDocumentPosition(proximos) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      filtros.compareDocumentPosition(agenda) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
+  it('filtros expandido por padrão', () => {
+    render(
+      <PainelAdmin agendamentos={agendamentos} clientes={clientes} />,
+    );
+
+    expect(
+      screen.getByRole('group', { name: 'Filtro da agenda' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(/buscar por nome ou e-mail/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Recolher filtros' }),
+    ).toBeInTheDocument();
+  });
+
+  it('recolher filtros oculta controles e mantém Próximos e listagem', async () => {
+    const user = userEvent.setup();
+    render(
+      <PainelAdmin agendamentos={agendamentos} clientes={clientes} />,
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: 'Recolher filtros' }),
+    );
+
+    expect(
+      screen.queryByRole('group', { name: 'Filtro da agenda' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText(/buscar por nome ou e-mail/i),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText('Horários de hoje em diante, em destaque.'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Agenda completa')).toBeInTheDocument();
+  });
+
+  it('expandir filtros restaura os controles', async () => {
+    const user = userEvent.setup();
+    render(
+      <PainelAdmin agendamentos={agendamentos} clientes={clientes} />,
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: 'Recolher filtros' }),
+    );
+    await user.click(
+      screen.getByRole('button', { name: 'Expandir filtros' }),
+    );
+
+    expect(
+      screen.getByRole('group', { name: 'Filtro da agenda' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(/buscar por nome ou e-mail/i),
+    ).toBeInTheDocument();
+  });
+
+  it('nome acessível filtros indica expandir ou recolher', async () => {
+    const user = userEvent.setup();
+    render(
+      <PainelAdmin agendamentos={agendamentos} clientes={clientes} />,
+    );
+
+    expect(
+      screen.getByRole('button', { name: 'Recolher filtros' }),
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole('button', { name: 'Recolher filtros' }),
+    );
+
+    expect(
+      screen.getByRole('button', { name: 'Expandir filtros' }),
+    ).toBeInTheDocument();
+  });
+
   it('conteúdo Analítico: KPIs e clientes sem filtros nem listagem operacional', async () => {
     const user = userEvent.setup();
     render(

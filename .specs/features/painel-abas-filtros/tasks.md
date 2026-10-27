@@ -85,15 +85,16 @@ T1 → T2 → T3
 
 **Done when**:
 
-- [ ] Bloco de filtros acima de Próximos e da listagem na aba Agenda
-- [ ] Expandido no load; recolher oculta controles e mantém Próximos/listagem; expandir restaura
-- [ ] Controle com nome acessível (expandir/recolher filtros)
-- [ ] Testes cobrem default expandido, recolher, expandir de novo
-- [ ] Gate quick passa
+- [x] Bloco de filtros acima de Próximos e da listagem na aba Agenda
+- [x] Expandido no load; recolher oculta controles e mantém Próximos/listagem; expandir restaura
+- [x] Controle com nome acessível (expandir/recolher filtros)
+- [x] Testes cobrem default expandido, recolher, expandir de novo
+- [x] Gate quick passa
 
 **Tests**: unit
 **Gate**: quick
 **Commit**: `feat(painel): filtros globais colapsáveis na Agenda`
+**Status**: ✅ Complete
 
 ---
 

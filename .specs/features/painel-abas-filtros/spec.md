@@ -99,11 +99,11 @@ O painel do intérprete empilha KPIs, próximos, clientes e agenda numa única r
 | TAB-03 | P1: Duas abas | Execute | Verified |
 | TAB-04 | P1: Duas abas | Execute | Verified |
 | TAB-05 | P1: Duas abas | Specify | Pending |
-| FIL-01 | P1: Filtros colapsáveis | Specify | Pending |
-| FIL-02 | P1: Filtros colapsáveis | Specify | Pending |
-| FIL-03 | P1: Filtros colapsáveis | Specify | Pending |
-| FIL-04 | P1: Filtros colapsáveis | Specify | Pending |
-| FIL-05 | P1: Filtros colapsáveis | Specify | Pending |
+| FIL-01 | P1: Filtros colapsáveis | Execute | Verified |
+| FIL-02 | P1: Filtros colapsáveis | Execute | Verified |
+| FIL-03 | P1: Filtros colapsáveis | Execute | Verified |
+| FIL-04 | P1: Filtros colapsáveis | Execute | Verified |
+| FIL-05 | P1: Filtros colapsáveis | Execute | Verified |
 | FIL-06 | P1: Filtros colapsáveis | Specify | Pending |
 | FIL-07 | P1: Filtros colapsáveis | Specify | Pending |
 

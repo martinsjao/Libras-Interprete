@@ -5,6 +5,8 @@ import {
   CalendarCheckIcon,
   CalendarClockIcon,
   ChartColumnIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
   ListIcon,
   UsersIcon,
 } from 'lucide-react';
@@ -67,6 +69,7 @@ export default function PainelAdmin({
 }) {
   const [filtro, setFiltro] = useState<FiltroAgenda>('todos');
   const [busca, setBusca] = useState('');
+  const [filtrosAbertos, setFiltrosAbertos] = useState(true);
 
   const hoje = hojeISO();
   const proximos = proximosDe(agendamentos, hoje);
@@ -88,6 +91,63 @@ export default function PainelAdmin({
       </TabsList>
 
       <TabsContent value="agenda" className="flex flex-col gap-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between gap-2">
+            <CardTitle>Filtros</CardTitle>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              onClick={() => setFiltrosAbertos((aberto) => !aberto)}
+              aria-expanded={filtrosAbertos}
+            >
+              {filtrosAbertos ? (
+                <>
+                  <ChevronUpIcon data-icon="inline-start" aria-hidden="true" />
+                  Recolher filtros
+                </>
+              ) : (
+                <>
+                  <ChevronDownIcon data-icon="inline-start" aria-hidden="true" />
+                  Expandir filtros
+                </>
+              )}
+            </Button>
+          </CardHeader>
+          {filtrosAbertos ? (
+            <CardContent className="flex flex-col gap-4">
+              <div
+                className="flex flex-wrap gap-2"
+                role="group"
+                aria-label="Filtro da agenda"
+              >
+                {FILTROS.map(({ valor, rotulo }) => (
+                  <Button
+                    key={valor}
+                    type="button"
+                    size="sm"
+                    variant={filtro === valor ? 'default' : 'outline'}
+                    onClick={() => setFiltro(valor)}
+                    aria-pressed={filtro === valor}
+                  >
+                    {rotulo}
+                  </Button>
+                ))}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="busca-agenda">Buscar por nome ou e-mail</Label>
+                <Input
+                  id="busca-agenda"
+                  type="search"
+                  value={busca}
+                  onChange={(e) => setBusca(e.target.value)}
+                  placeholder="Nome ou e-mail"
+                />
+              </div>
+            </CardContent>
+          ) : null}
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle>Próximos</CardTitle>
@@ -111,35 +171,7 @@ export default function PainelAdmin({
               Todos os horários reservados, ordenados por data.
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col gap-4">
-            <div
-              className="flex flex-wrap gap-2"
-              role="group"
-              aria-label="Filtro da agenda"
-            >
-              {FILTROS.map(({ valor, rotulo }) => (
-                <Button
-                  key={valor}
-                  type="button"
-                  size="sm"
-                  variant={filtro === valor ? 'default' : 'outline'}
-                  onClick={() => setFiltro(valor)}
-                  aria-pressed={filtro === valor}
-                >
-                  {rotulo}
-                </Button>
-              ))}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="busca-agenda">Buscar por nome ou e-mail</Label>
-              <Input
-                id="busca-agenda"
-                type="search"
-                value={busca}
-                onChange={(e) => setBusca(e.target.value)}
-                placeholder="Nome ou e-mail"
-              />
-            </div>
+          <CardContent>
             <ListaAgendamentos
               itens={agendaFiltrada}
               mostrarCliente
