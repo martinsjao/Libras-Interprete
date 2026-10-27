@@ -120,3 +120,41 @@ export function hojeISO() {
   const hoje = new Date();
   return `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}-${String(hoje.getDate()).padStart(2, '0')}`;
 }
+
+export type FiltroAgenda = 'hoje' | 'proximos' | 'todos';
+
+export type ItemAgendamento = {
+  id: number;
+  tipo: string;
+  data: string;
+  horario: string;
+  nome: string;
+  email: string;
+};
+
+export function proximosDe<T extends { data: string }>(itens: T[], hoje: string) {
+  return itens.filter((item) => item.data >= hoje);
+}
+
+export function filtrarAgenda<T extends ItemAgendamento>(
+  itens: T[],
+  filtro: FiltroAgenda,
+  busca: string,
+) {
+  const hoje = hojeISO();
+  let resultado =
+    filtro === 'hoje'
+      ? itens.filter((item) => item.data === hoje)
+      : filtro === 'proximos'
+        ? proximosDe(itens, hoje)
+        : itens;
+
+  const q = busca.trim().toLowerCase();
+  if (!q) return resultado;
+
+  return resultado.filter(
+    (item) =>
+      item.nome.toLowerCase().includes(q) ||
+      item.email.toLowerCase().includes(q),
+  );
+}

@@ -1,11 +1,41 @@
 import { describe, expect, it, vi, afterEach } from 'vitest';
 import {
+  filtrarAgenda,
   formatarTelefone,
   hojeISO,
   intervaloValido,
   intervalosConflitam,
+  proximosDe,
   rotuloTipo,
+  type ItemAgendamento,
 } from '@/src/lib/agendamento';
+
+const itens: ItemAgendamento[] = [
+  {
+    id: 1,
+    tipo: 'curso',
+    data: '2026-10-26',
+    horario: '08:00 - 09:00',
+    nome: 'Ana Silva',
+    email: 'ana@exemplo.com',
+  },
+  {
+    id: 2,
+    tipo: 'consulta',
+    data: '2026-10-27',
+    horario: '09:00 - 10:00',
+    nome: 'Bruno Costa',
+    email: 'bruno@exemplo.com',
+  },
+  {
+    id: 3,
+    tipo: 'reuniao',
+    data: '2026-10-28',
+    horario: '10:00 - 11:00',
+    nome: 'Carla Dias',
+    email: 'carla@exemplo.com',
+  },
+];
 
 describe('agendamento helpers', () => {
   afterEach(() => {
@@ -40,5 +70,42 @@ describe('agendamento helpers', () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date(2026, 9, 27, 15, 0, 0));
     expect(hojeISO()).toBe('2026-10-27');
+  });
+
+  it('proximosDe retorna apenas data >= hoje', () => {
+    const resultado = proximosDe(itens, '2026-10-27');
+    expect(resultado.map((i) => i.id)).toEqual([2, 3]);
+  });
+
+  it('filtro hoje restringe à data de hoje', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 9, 27, 12, 0, 0));
+    expect(filtrarAgenda(itens, 'hoje', '').map((i) => i.id)).toEqual([2]);
+  });
+
+  it('filtro proximos restringe a data >= hoje', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 9, 27, 12, 0, 0));
+    expect(filtrarAgenda(itens, 'proximos', '').map((i) => i.id)).toEqual([
+      2, 3,
+    ]);
+  });
+
+  it('filtro todos retorna todos', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 9, 27, 12, 0, 0));
+    expect(filtrarAgenda(itens, 'todos', '').map((i) => i.id)).toEqual([
+      1, 2, 3,
+    ]);
+  });
+
+  it('busca filtra por nome ou e-mail case-insensitive', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 9, 27, 12, 0, 0));
+    expect(filtrarAgenda(itens, 'todos', 'ANA').map((i) => i.id)).toEqual([1]);
+    expect(filtrarAgenda(itens, 'todos', 'BRUNO@').map((i) => i.id)).toEqual([
+      2,
+    ]);
+    expect(filtrarAgenda(itens, 'todos', 'zzz')).toEqual([]);
   });
 });

@@ -141,13 +141,14 @@ T7 → T8 → T9 → T10 → T11 → T12
 
 **Done when**:
 
-- [ ] `filtrarAgenda(itens, filtro, busca)` com filtro `'hoje' | 'proximos' | 'todos'` e busca case-insensitive em nome/email
-- [ ] `proximosDe(itens, hoje)` retorna `data >= hoje`
-- [ ] Testes cobrem filtros, busca, lista vazia, busca sem match
-- [ ] Gate quick passa
+- [x] `filtrarAgenda(itens, filtro, busca)` com filtro `'hoje' | 'proximos' | 'todos'` e busca case-insensitive em nome/email
+- [x] `proximosDe(itens, hoje)` retorna `data >= hoje`
+- [x] Testes cobrem filtros, busca, lista vazia, busca sem match
+- [x] Gate quick passa
 
 **Tests**: unit
 **Gate**: quick
+**Status**: ✅ Complete
 
 ---
 
