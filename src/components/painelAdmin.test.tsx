@@ -51,6 +51,71 @@ describe('PainelAdmin', () => {
     vi.useRealTimers();
   });
 
+  it('aba Agenda ativa por padrão', () => {
+    render(
+      <PainelAdmin agendamentos={agendamentos} clientes={clientes} />,
+    );
+
+    expect(
+      screen.getByRole('tab', { name: 'Agenda', selected: true }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: 'Analítico', selected: false }),
+    ).toBeInTheDocument();
+  });
+
+  it('rótulos Agenda e Analítico', () => {
+    render(
+      <PainelAdmin agendamentos={agendamentos} clientes={clientes} />,
+    );
+
+    expect(screen.getByRole('tab', { name: 'Agenda' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: 'Analítico' }),
+    ).toBeInTheDocument();
+  });
+
+  it('conteúdo Agenda: filtros, Próximos e listagem sem KPIs nem tabela clientes', () => {
+    render(
+      <PainelAdmin agendamentos={agendamentos} clientes={clientes} />,
+    );
+
+    expect(
+      screen.getByRole('group', { name: 'Filtro da agenda' }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Horários de hoje em diante, em destaque.')).toBeInTheDocument();
+    expect(screen.getByText('Agenda completa')).toBeInTheDocument();
+    expect(screen.queryByText('Quantidade de agendamentos por cliente.')).not.toBeInTheDocument();
+    expect(
+      screen.queryAllByText('Agendamentos').find(
+        (el) => el.getAttribute('data-slot') === 'card-description',
+      ),
+    ).toBeUndefined();
+  });
+
+  it('conteúdo Analítico: KPIs e clientes sem filtros nem listagem operacional', async () => {
+    const user = userEvent.setup();
+    render(
+      <PainelAdmin agendamentos={agendamentos} clientes={clientes} />,
+    );
+
+    await user.click(screen.getByRole('tab', { name: 'Analítico' }));
+
+    expect(valorDoTotal('Agendamentos')).toBe('3');
+    expect(valorDoTotal('Clientes')).toBe('3');
+    expect(valorDoTotal('Próximos')).toBeTruthy();
+    expect(
+      screen.getByText('Quantidade de agendamentos por cliente.'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('group', { name: 'Filtro da agenda' }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText('Agenda completa')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Horários de hoje em diante, em destaque.'),
+    ).not.toBeInTheDocument();
+  });
+
   it('totais usam o conjunto completo independente de filtro e busca', async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     vi.setSystemTime(new Date(2026, 9, 27, 12, 0, 0));
@@ -60,15 +125,13 @@ describe('PainelAdmin', () => {
       <PainelAdmin agendamentos={agendamentos} clientes={clientes} />,
     );
 
-    expect(valorDoTotal('Agendamentos')).toBe('3');
-    expect(valorDoTotal('Clientes')).toBe('3');
-    expect(valorDoTotal('Próximos')).toBe('2');
-
     await user.click(screen.getByRole('button', { name: 'Hoje' }));
     await user.type(
       screen.getByLabelText(/buscar por nome ou e-mail/i),
       'zzz',
     );
+
+    await user.click(screen.getByRole('tab', { name: 'Analítico' }));
 
     expect(valorDoTotal('Agendamentos')).toBe('3');
     expect(valorDoTotal('Clientes')).toBe('3');

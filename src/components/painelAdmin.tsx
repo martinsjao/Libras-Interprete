@@ -4,6 +4,8 @@ import { useState } from 'react';
 import {
   CalendarCheckIcon,
   CalendarClockIcon,
+  ChartColumnIcon,
+  ListIcon,
   UsersIcon,
 } from 'lucide-react';
 import ListaAgendamentos, {
@@ -35,6 +37,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   filtrarAgenda,
   hojeISO,
@@ -72,69 +75,126 @@ export default function PainelAdmin({
   const agendaFiltrada = filtrarAgenda(agendamentos, filtro, busca);
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between gap-2">
-            <div className="flex flex-col gap-1">
-              <CardDescription>Agendamentos</CardDescription>
-              <CardTitle className="text-3xl tabular-nums">
-                {totalAgendamentos}
-              </CardTitle>
-            </div>
-            <CalendarCheckIcon
-              className="text-muted-foreground size-5"
-              aria-hidden="true"
-            />
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between gap-2">
-            <div className="flex flex-col gap-1">
-              <CardDescription>Clientes</CardDescription>
-              <CardTitle className="text-3xl tabular-nums">
-                {totalClientes}
-              </CardTitle>
-            </div>
-            <UsersIcon
-              className="text-muted-foreground size-5"
-              aria-hidden="true"
-            />
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between gap-2">
-            <div className="flex flex-col gap-1">
-              <CardDescription>Próximos</CardDescription>
-              <CardTitle className="text-3xl tabular-nums">
-                {proximos.length}
-              </CardTitle>
-            </div>
-            <CalendarClockIcon
-              className="text-muted-foreground size-5"
-              aria-hidden="true"
-            />
-          </CardHeader>
-        </Card>
-      </div>
+    <Tabs defaultValue="agenda" className="gap-6">
+      <TabsList className="w-full max-w-md">
+        <TabsTrigger value="agenda">
+          <ListIcon data-icon="inline-start" />
+          Agenda
+        </TabsTrigger>
+        <TabsTrigger value="analitico">
+          <ChartColumnIcon data-icon="inline-start" />
+          Analítico
+        </TabsTrigger>
+      </TabsList>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Próximos</CardTitle>
-          <CardDescription>
-            Horários de hoje em diante, em destaque.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ListaAgendamentos
-            itens={proximos}
-            mostrarCliente
-            vazio="Nenhum agendamento próximo."
-          />
-        </CardContent>
-      </Card>
+      <TabsContent value="agenda" className="flex flex-col gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Próximos</CardTitle>
+            <CardDescription>
+              Horários de hoje em diante, em destaque.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ListaAgendamentos
+              itens={proximos}
+              mostrarCliente
+              vazio="Nenhum agendamento próximo."
+            />
+          </CardContent>
+        </Card>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Agenda completa</CardTitle>
+            <CardDescription>
+              Todos os horários reservados, ordenados por data.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
+            <div
+              className="flex flex-wrap gap-2"
+              role="group"
+              aria-label="Filtro da agenda"
+            >
+              {FILTROS.map(({ valor, rotulo }) => (
+                <Button
+                  key={valor}
+                  type="button"
+                  size="sm"
+                  variant={filtro === valor ? 'default' : 'outline'}
+                  onClick={() => setFiltro(valor)}
+                  aria-pressed={filtro === valor}
+                >
+                  {rotulo}
+                </Button>
+              ))}
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="busca-agenda">Buscar por nome ou e-mail</Label>
+              <Input
+                id="busca-agenda"
+                type="search"
+                value={busca}
+                onChange={(e) => setBusca(e.target.value)}
+                placeholder="Nome ou e-mail"
+              />
+            </div>
+            <ListaAgendamentos
+              itens={agendaFiltrada}
+              mostrarCliente
+              vazio="Nenhum agendamento corresponde ao filtro ou busca."
+            />
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      <TabsContent value="analitico" className="flex flex-col gap-6">
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between gap-2">
+              <div className="flex flex-col gap-1">
+                <CardDescription>Agendamentos</CardDescription>
+                <CardTitle className="text-3xl tabular-nums">
+                  {totalAgendamentos}
+                </CardTitle>
+              </div>
+              <CalendarCheckIcon
+                className="text-muted-foreground size-5"
+                aria-hidden="true"
+              />
+            </CardHeader>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between gap-2">
+              <div className="flex flex-col gap-1">
+                <CardDescription>Clientes</CardDescription>
+                <CardTitle className="text-3xl tabular-nums">
+                  {totalClientes}
+                </CardTitle>
+              </div>
+              <UsersIcon
+                className="text-muted-foreground size-5"
+                aria-hidden="true"
+              />
+            </CardHeader>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between gap-2">
+              <div className="flex flex-col gap-1">
+                <CardDescription>Próximos</CardDescription>
+                <CardTitle className="text-3xl tabular-nums">
+                  {proximos.length}
+                </CardTitle>
+              </div>
+              <CalendarClockIcon
+                className="text-muted-foreground size-5"
+                aria-hidden="true"
+              />
+            </CardHeader>
+          </Card>
+        </div>
+
         <Card>
           <CardHeader>
             <CardTitle>Clientes</CardTitle>
@@ -184,51 +244,7 @@ export default function PainelAdmin({
             )}
           </CardContent>
         </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Agenda completa</CardTitle>
-            <CardDescription>
-              Todos os horários reservados, ordenados por data.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4">
-            <div
-              className="flex flex-wrap gap-2"
-              role="group"
-              aria-label="Filtro da agenda"
-            >
-              {FILTROS.map(({ valor, rotulo }) => (
-                <Button
-                  key={valor}
-                  type="button"
-                  size="sm"
-                  variant={filtro === valor ? 'default' : 'outline'}
-                  onClick={() => setFiltro(valor)}
-                  aria-pressed={filtro === valor}
-                >
-                  {rotulo}
-                </Button>
-              ))}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="busca-agenda">Buscar por nome ou e-mail</Label>
-              <Input
-                id="busca-agenda"
-                type="search"
-                value={busca}
-                onChange={(e) => setBusca(e.target.value)}
-                placeholder="Nome ou e-mail"
-              />
-            </div>
-            <ListaAgendamentos
-              itens={agendaFiltrada}
-              mostrarCliente
-              vazio="Nenhum agendamento corresponde ao filtro ou busca."
-            />
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+      </TabsContent>
+    </Tabs>
   );
 }
