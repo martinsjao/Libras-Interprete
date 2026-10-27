@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "promote_threshold": 2,
+  "window_days": 45,
+  "quarantine_threshold": 2,
+  "next_id": 4,
+  "lessons": [
+    {
+      "id": "L-001",
+      "key": "spec_precision_gap::assert the specific decorative icon has aria hidden not that any aria hidden node exists",
+      "text": "Assert the specific decorative icon has aria-hidden, not that any aria-hidden node exists",
+      "signal": "spec_precision_gap",
+      "scope": "a11y",
+      "status": "candidate",
+      "features": [
+        "a11y-painel-tailwind"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "C4 areaLogada.test.tsx (a11y)"
+      ],
+      "created": "2026-10-27T23:39:30Z",
+      "last_seen": "2026-10-27T23:39:30Z"
+    },
+    {
+      "id": "L-002",
+      "key": "spec_precision_gap::when purging css assert banned selectors are absent from the stylesheet not only that design tokens remain",
+      "text": "When purging CSS, assert banned selectors are absent from the stylesheet, not only that design tokens remain",
+      "signal": "spec_precision_gap",
+      "scope": "css",
+      "status": "candidate",
+      "features": [
+        "a11y-painel-tailwind"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "C16 legacy-css.test.ts (css)"
+      ],
+      "created": "2026-10-27T23:39:30Z",
+      "last_seen": "2026-10-27T23:39:30Z"
+    },
+    {
+      "id": "L-003",
+      "key": "spec_precision_gap::empty state filter criteria need a case per filter mode that can clear the list not only search",
+      "text": "Empty-state filter criteria need a case per filter mode that can clear the list, not only search",
+      "signal": "spec_precision_gap",
+      "scope": "painel",
+      "status": "candidate",
+      "features": [
+        "a11y-painel-tailwind"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "C12 painelAdmin.test.tsx (painel)"
+      ],
+      "created": "2026-10-27T23:39:30Z",
+      "last_seen": "2026-10-27T23:39:30Z"
+    }
+  ]
+}

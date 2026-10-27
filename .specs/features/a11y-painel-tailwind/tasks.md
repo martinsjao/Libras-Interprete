@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: `.specs/features/a11y-painel-tailwind/design.md`
-**Status**: Approved
+**Status**: Done
 **Approved**: 2026-10-27 - user: "aprovado"
 **Mutations**: 3
 **Build**: `npm run build; npm run lint; npx vitest run`
@@ -381,4 +381,9 @@ Proof: `npx vitest run src/components/carrosselImagens.test.tsx -t "aria-live"`
 
 ## Handoff
 
-**Dispatched:** Batch B (phase 4, T8–T12) — returned
+**Dispatched:** Batch A returned; Batch B returned; Verifier at HEAD 4c78682 — returned; findings closed in 7fae78c; mutations re-run killed 3/3
+**Walked:**
+- P1 a11y home `/`: h1 "Interpretação em Libras"; region carrossel; aria-live com alt descritivo do slide 1; labels no contato
+- P1 a11y `/entrar`: h1 "Entrar"; campos E-mail/Senha com nome acessível; marca não é heading
+- P1 a11y `/cadastro`: h1 "Criar conta"; labels Nome/E-mail/Senha
+- P1 painel `/painel`: não andado no browser (exige sessão intérprete); coberto por painelAdmin.test.tsx (vazio/totais/hoje-vazio) e agendamento.test.ts (filtros)
