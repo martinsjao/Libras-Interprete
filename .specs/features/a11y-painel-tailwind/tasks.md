@@ -290,12 +290,13 @@ T7 → T8 → T9 → T10 → T11 → T12
 
 **Done when**:
 
-- [ ] Sem classe `theme-toggle`
-- [ ] `aria-label` mantido
-- [ ] Gate quick passa (teste opcional trivial — pode ser coberto pelo grep T12)
+- [x] Sem classe `theme-toggle`
+- [x] `aria-label` mantido
+- [x] Gate quick passa (teste opcional trivial — pode ser coberto pelo grep T12)
 
 **Tests**: none
 **Gate**: quick
+**Status**: ✅ Complete
 
 ---
 
