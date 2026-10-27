@@ -1,11 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { CircleAlertIcon, CircleCheckIcon } from 'lucide-react';
-import Calendario from './calendario';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -13,9 +9,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/card";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -23,18 +19,24 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Spinner } from '@/components/ui/spinner';
-import { Textarea } from '@/components/ui/textarea';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+} from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
+import { Textarea } from "@/components/ui/textarea";
 import {
-  HORARIOS,
+  HORARIOS_FIM,
+  HORARIOS_INICIO,
   TIPOS_SERVICO,
   dataFormatadaLonga,
   datasLotadas,
+  formatarTelefone,
+  intervalosConflitam,
   montarMapaHorarios,
   type SlotOcupado,
-} from '@/src/lib/agendamento';
+} from "@/src/lib/agendamento";
+import { CircleAlertIcon, CircleCheckIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import Calendario from "./calendario";
 
 export default function FormularioAgendamento({
   nomePadrao,
@@ -46,13 +48,14 @@ export default function FormularioAgendamento({
   const router = useRouter();
   const [slots, setSlots] = useState<SlotOcupado[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [serviceType, setServiceType] = useState('');
-  const [timeSlot, setTimeSlot] = useState('');
-  const [clientPhone, setClientPhone] = useState('');
-  const [observations, setObservations] = useState('');
+  const [serviceType, setServiceType] = useState("");
+  const [initialHour, setInitialHour] = useState("");
+  const [finalHour, setFinalHour] = useState("");
+  const [clientPhone, setClientPhone] = useState("");
+  const [observations, setObservations] = useState("");
   const [enviando, setEnviando] = useState(false);
-  const [erro, setErro] = useState('');
-  const [sucesso, setSucesso] = useState('');
+  const [erro, setErro] = useState("");
+  const [sucesso, setSucesso] = useState("");
 
   const mapaHorarios = useMemo(() => montarMapaHorarios(slots), [slots]);
   const datasLotadasSet = useMemo(
@@ -75,14 +78,24 @@ export default function FormularioAgendamento({
   }, [mapaHorarios, selectedDate]);
 
   const horarioSelecionado =
-    timeSlot && !horariosOcupadosNaData.has(timeSlot) ? timeSlot : '';
+    initialHour && finalHour ? `${initialHour} - ${finalHour}` : "";
+  const horarioDisponivel =
+    horarioSelecionado &&
+    ![...horariosOcupadosNaData].some((horario) =>
+      intervalosConflitam(horarioSelecionado, horario),
+    )
+      ? horarioSelecionado
+      : "";
+  const horariosFimDisponiveis = HORARIOS_FIM.filter(
+    (horario) => !initialHour || horario > initialHour,
+  );
 
   useEffect(() => {
     let ativo = true;
 
     async function carregarSlots() {
       try {
-        const res = await fetch('/api/agendamento');
+        const res = await fetch("/api/agendamento");
         if (!res.ok) return;
         const payload = (await res.json()) as { slots?: SlotOcupado[] };
         if (ativo && Array.isArray(payload.slots)) {
@@ -101,68 +114,69 @@ export default function FormularioAgendamento({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setErro('');
-    setSucesso('');
+    setErro("");
+    setSucesso("");
 
     if (!selectedDate) {
-      setErro('Selecione uma data no calendário.');
+      setErro("Selecione uma data no calendário.");
       return;
     }
 
     if (!serviceType) {
-      setErro('Selecione o tipo de serviço.');
+      setErro("Selecione o tipo de serviço.");
       return;
     }
 
-    if (!horarioSelecionado) {
-      setErro('Selecione um horário disponível.');
+    if (!horarioDisponivel) {
+      setErro("Selecione um horário disponível.");
       return;
     }
 
     setEnviando(true);
     try {
-      const res = await fetch('/api/agendamento', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/agendamento", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           tipo: serviceType,
           data: selectedDate,
-          horario: horarioSelecionado,
+          horario: horarioDisponivel,
           telefone: clientPhone,
           observations,
         }),
       });
 
       if (res.status === 401) {
-        throw new Error('Faça login para confirmar o agendamento.');
+        throw new Error("Faça login para confirmar o agendamento.");
       }
 
       if (!res.ok) {
         const payload = await res.json().catch(() => null);
-        throw new Error(payload?.error || 'Falha ao salvar');
+        throw new Error(payload?.error || "Falha ao salvar");
       }
 
       setSlots((atual) => [
         ...atual,
-        { data: selectedDate, horario: horarioSelecionado },
+        { data: selectedDate, horario: horarioDisponivel },
       ]);
 
       setSucesso(
-        `Agendamento confirmado para ${nomePadrao} em ${dataFormatadaLonga(selectedDate)}, ${horarioSelecionado}.`,
+        `Agendamento confirmado para ${nomePadrao} em ${dataFormatadaLonga(selectedDate)}, ${horarioDisponivel}.`,
       );
 
       setSelectedDate(null);
-      setServiceType('');
-      setTimeSlot('');
-      setClientPhone('');
-      setObservations('');
+      setServiceType("");
+      setInitialHour("");
+      setFinalHour("");
+      setClientPhone("");
+      setObservations("");
       router.refresh();
     } catch (err) {
       console.error(err);
       setErro(
         err instanceof Error
           ? err.message
-          : 'Erro ao confirmar agendamento. Tente novamente.',
+          : "Erro ao confirmar agendamento. Tente novamente.",
       );
     } finally {
       setEnviando(false);
@@ -186,9 +200,10 @@ export default function FormularioAgendamento({
             selectedDate={selectedDate}
             onSelectDate={(data) => {
               setSelectedDate(data);
-              setTimeSlot('');
-              setErro('');
-              setSucesso('');
+              setInitialHour("");
+              setFinalHour("");
+              setErro("");
+              setSucesso("");
             }}
           />
         </CardContent>
@@ -209,7 +224,7 @@ export default function FormularioAgendamento({
                 <Select
                   items={[...TIPOS_SERVICO]}
                   value={serviceType || null}
-                  onValueChange={(value) => setServiceType(value ?? '')}
+                  onValueChange={(value) => setServiceType(value ?? "")}
                 >
                   <SelectTrigger id="serviceType" className="w-full">
                     <SelectValue placeholder="Selecione..." />
@@ -231,39 +246,118 @@ export default function FormularioAgendamento({
                 <Input
                   id="selectedDate"
                   type="text"
-                  value={selectedDate ? dataFormatadaLonga(selectedDate) : ''}
+                  value={selectedDate ? dataFormatadaLonga(selectedDate) : ""}
                   placeholder="Clique em um dia com vagas no calendário"
                   readOnly
                 />
               </Field>
 
-              <Field>
-                <FieldLabel>Horário</FieldLabel>
-                <ToggleGroup
-                  variant="outline"
-                  spacing={2}
-                  className="flex w-full flex-wrap"
-                  value={horarioSelecionado ? [horarioSelecionado] : []}
-                  onValueChange={(values) => setTimeSlot(values[0] ?? '')}
-                  disabled={!selectedDate}
-                >
-                  {HORARIOS.map((horario) => {
-                    const ocupado = horariosOcupadosNaData.has(horario);
-                    return (
-                      <ToggleGroupItem
-                        key={horario}
-                        value={horario}
-                        aria-label={horario}
-                        disabled={!selectedDate || ocupado}
-                        className="min-w-[7.5rem] flex-1"
-                      >
-                        {horario}
-                        {ocupado ? ' · ocupado' : ''}
-                      </ToggleGroupItem>
-                    );
-                  })}
-                </ToggleGroup>
-              </Field>
+              <FieldGroup className="grid gap-5 sm:grid-cols-2">
+                <Field data-disabled={!selectedDate}>
+                  <FieldLabel htmlFor="initialHour">
+                    Horário de início
+                  </FieldLabel>
+                  <Select
+                    items={[
+                      { label: "Selecione...", value: null },
+                      ...HORARIOS_INICIO.map((horario) => ({
+                        label: horario,
+                        value: horario,
+                      })),
+                    ]}
+                    value={initialHour || null}
+                    onValueChange={(value) => {
+                      const inicio = value ?? "";
+                      setInitialHour(inicio);
+                      const novoIntervalo = finalHour
+                        ? `${inicio} - ${finalHour}`
+                        : "";
+                      const fimIndisponivel =
+                        !inicio ||
+                        !finalHour ||
+                        inicio >= finalHour ||
+                        [...horariosOcupadosNaData].some((existente) =>
+                          intervalosConflitam(novoIntervalo, existente),
+                        );
+
+                      if (fimIndisponivel) {
+                        setFinalHour("");
+                      }
+                    }}
+                    disabled={!selectedDate}
+                  >
+                    <SelectTrigger id="initialHour" className="w-full">
+                      <SelectValue placeholder="Selecione..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {HORARIOS_INICIO.map((horario) => (
+                          <SelectItem
+                            key={horario}
+                            value={horario}
+                            disabled={
+                              !selectedDate ||
+                              HORARIOS_FIM.every(
+                                (fim) =>
+                                  fim <= horario ||
+                                  [...horariosOcupadosNaData].some((ocupado) =>
+                                    intervalosConflitam(
+                                      `${horario} - ${fim}`,
+                                      ocupado,
+                                    ),
+                                  ),
+                              )
+                            }
+                          >
+                            {horario}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </Field>
+
+                <Field data-disabled={!selectedDate || !initialHour}>
+                  <FieldLabel htmlFor="finalHour">Horário de fim</FieldLabel>
+                  <Select
+                    items={[
+                      { label: "Selecione...", value: null },
+                      ...horariosFimDisponiveis.map((horario) => ({
+                        label: horario,
+                        value: horario,
+                      })),
+                    ]}
+                    value={finalHour || null}
+                    onValueChange={(value) => setFinalHour(value ?? "")}
+                    disabled={!selectedDate || !initialHour}
+                  >
+                    <SelectTrigger id="finalHour" className="w-full">
+                      <SelectValue placeholder="Selecione..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {horariosFimDisponiveis.map((horario) => {
+                          const intervalo = `${initialHour} - ${horario}`;
+                          const ocupado = [...horariosOcupadosNaData].some(
+                            (existente) =>
+                              intervalosConflitam(intervalo, existente),
+                          );
+                          return (
+                            <SelectItem
+                              key={horario}
+                              value={horario}
+                              disabled={ocupado}
+                            >
+                              {horario}
+                              {ocupado ? " · ocupado" : ""}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </Field>
+              </FieldGroup>
 
               <Field>
                 <FieldLabel htmlFor="clientName">Seu nome</FieldLabel>
@@ -290,8 +384,10 @@ export default function FormularioAgendamento({
                 <Input
                   id="clientPhone"
                   type="tel"
+                  inputMode="numeric"
+                  maxLength={15}
                   value={clientPhone}
-                  onChange={(e) => setClientPhone(e.target.value)}
+                  onChange={(e) => setClientPhone(formatarTelefone(e.target.value))}
                   placeholder="(11) 99999-9999"
                 />
               </Field>
@@ -331,7 +427,7 @@ export default function FormularioAgendamento({
               className="w-full sm:w-auto"
             >
               {enviando ? <Spinner data-icon="inline-start" /> : null}
-              {enviando ? 'Enviando...' : 'Confirmar agendamento'}
+              {enviando ? "Enviando..." : "Confirmar agendamento"}
             </Button>
           </CardFooter>
         </form>

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
+import { eq } from 'drizzle-orm';
 import { db } from '@/src/db';
 import { agendamentos } from '@/src/db/schema';
+import { intervaloValido, intervalosConflitam } from '@/src/lib/agendamento';
 import { sessaoAtual } from '@/src/lib/auth/sessao';
 
 export const dynamic = 'force-dynamic';
@@ -64,7 +66,26 @@ export async function POST(request: Request) {
     );
   }
 
+  if (!intervaloValido(horario)) {
+    return NextResponse.json(
+      { error: 'Selecione um intervalo de horário válido.' },
+      { status: 400 },
+    );
+  }
+
   try {
+    const existentes = await db
+      .select({ horario: agendamentos.horario })
+      .from(agendamentos)
+      .where(eq(agendamentos.data, data));
+
+    if (existentes.some((item) => intervalosConflitam(horario, item.horario))) {
+      return NextResponse.json(
+        { error: 'Este período já está reservado para a data selecionada.' },
+        { status: 409 },
+      );
+    }
+
     const [created] = await db
       .insert(agendamentos)
       .values({

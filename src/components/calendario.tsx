@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useMemo } from 'react';
-import { ptBR } from 'date-fns/locale';
-import { Calendar } from '@/components/ui/calendar';
+import { Calendar } from "@/components/ui/calendar";
+import { ptBR } from "date-fns/locale";
+import { useMemo } from "react";
 
 type CalendarioProps = {
   /** Datas sem nenhum horário livre. */
@@ -14,11 +14,11 @@ type CalendarioProps = {
 };
 
 function toISO(date: Date) {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
 
 function parseISO(dateStr: string) {
-  const [year, month, day] = dateStr.split('-').map(Number);
+  const [year, month, day] = dateStr.split("-").map(Number);
   return new Date(year, month - 1, day);
 }
 
@@ -41,6 +41,21 @@ export default function Calendario({
   );
   const selected = selectedDate ? parseISO(selectedDate) : undefined;
 
+  const legendItems = [
+    {
+      label: "Disponível",
+      color: "bg-primary/15",
+    },
+    {
+      label: "Vagas limitadas",
+      color: "bg-warning/25",
+    },
+    {
+      label: "Sem disponibilidade",
+      color: "bg-destructive/15",
+    },
+  ];
+
   return (
     <div className="flex flex-col gap-4">
       <Calendar
@@ -52,49 +67,40 @@ export default function Calendario({
         }}
         disabled={[{ before: today }, ...lotadas]}
         modifiers={{
-          lotado: lotadas,
-          parcial: (date) => {
+          semDisponibilidade: lotadas,
+          vagasLimitadas: (date) => {
             const iso = toISO(date);
             return (
-              date >= today &&
-              datasParciais.has(iso) &&
-              !datasLotadas.has(iso)
+              date >= today && datasParciais.has(iso) && !datasLotadas.has(iso)
             );
           },
-          livre: (date) => {
+          disponivel: (date) => {
             const iso = toISO(date);
             return (
-              date >= today &&
-              !datasLotadas.has(iso) &&
-              !datasParciais.has(iso)
+              date >= today && !datasLotadas.has(iso) && !datasParciais.has(iso)
             );
           },
         }}
         modifiersClassNames={{
-          lotado: 'bg-unavailable text-unavailable-text opacity-100',
-          parcial: 'bg-accent text-accent-foreground',
-          livre: 'bg-available text-foreground',
+          semDisponibilidade:
+            "bg-destructive/15 text-destructive opacity-100 data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground",
+          vagasLimitadas:
+            "bg-warning/25 text-warning-foreground data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground",
+          disponivel:
+            "bg-primary/15 text-primary data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground",
         }}
         className="w-full [--cell-size:--spacing(9)]"
       />
 
       <ul className="flex list-none flex-wrap gap-4 text-sm text-muted-foreground">
-        <li className="flex items-center gap-2">
-          <span className="size-3 rounded-full bg-available ring-1 ring-border" />
-          Livre
-        </li>
-        <li className="flex items-center gap-2">
-          <span className="size-3 rounded-full bg-accent ring-1 ring-border" />
-          Com vagas
-        </li>
-        <li className="flex items-center gap-2">
-          <span className="size-3 rounded-full bg-primary" />
-          Selecionado
-        </li>
-        <li className="flex items-center gap-2">
-          <span className="size-3 rounded-full bg-unavailable ring-1 ring-border" />
-          Lotado
-        </li>
+        {legendItems.map((item) => (
+          <li key={item.label} className="flex items-center gap-2">
+            <span
+              className={`size-3 rounded-full ${item.color} ring-1 ring-border`}
+            />
+            {item.label}
+          </li>
+        ))}
       </ul>
     </div>
   );
