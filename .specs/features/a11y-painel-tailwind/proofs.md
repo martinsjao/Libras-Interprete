@@ -1,6 +1,6 @@
 # a11y-painel-tailwind proofs
 
-**HEAD**: 76c8bb8
+**HEAD**: e533a84
 **Tree**: clean
 **Result**: 20 pass, 0 fail; mutations 3 killed, 0 not
 
