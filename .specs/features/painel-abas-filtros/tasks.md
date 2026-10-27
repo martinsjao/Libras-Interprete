@@ -9,7 +9,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 ---
 
 **Design**: none - reorganização de `PainelAdmin`; reusa `Tabs` de `contaCliente` (Design skipped)
-**Status**: In Progress
+**Status**: Done
 **Approved**: 2026-10-27 - user: "aprovado"
 **Mutations**: 3
 **Build**: `npm run build; npm run lint; npx vitest run`
@@ -108,14 +108,15 @@ T1 → T2 → T3
 
 **Done when**:
 
-- [ ] Teste: escolhe filtro/busca na Agenda, vai a Analítico e volta — mesmos valores ativos e listagem coerente
-- [ ] Teste de totais abre Analítico (ou navega) e confirma conjunto completo após filtro na Agenda
-- [ ] Testes de vazio (busca/Hoje) ainda passam na aba Agenda
-- [ ] Gate full + build passam
+- [x] Teste: escolhe filtro/busca na Agenda, vai a Analítico e volta — mesmos valores ativos e listagem coerente
+- [x] Teste de totais abre Analítico (ou navega) e confirma conjunto completo após filtro na Agenda
+- [x] Testes de vazio (busca/Hoje) ainda passam na aba Agenda
+- [x] Gate full + build passam
 
 **Tests**: unit
 **Gate**: build
 **Commit**: `test(painel): estado entre abas e totais no Analítico`
+**Status**: ✅ Complete
 
 ---
 

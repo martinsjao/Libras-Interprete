@@ -215,6 +215,49 @@ describe('PainelAdmin', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('preserva filtro e busca ao voltar de Analítico', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    vi.setSystemTime(new Date(2026, 9, 27, 12, 0, 0));
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+
+    render(
+      <PainelAdmin agendamentos={agendamentos} clientes={clientes} />,
+    );
+
+    const filtros = screen.getByRole('group', { name: 'Filtro da agenda' });
+    await user.click(within(filtros).getByRole('button', { name: 'Hoje' }));
+    await user.type(
+      screen.getByLabelText(/buscar por nome ou e-mail/i),
+      'bruno',
+    );
+
+    const agenda = screen
+      .getByText('Agenda completa')
+      .closest('[data-slot="card"]') as HTMLElement | null;
+    if (!agenda) throw new Error('card Agenda completa não encontrado');
+    expect(within(agenda).getByText('Bruno Costa')).toBeInTheDocument();
+    expect(within(agenda).queryByText('Ana Silva')).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('tab', { name: 'Analítico' }));
+    await user.click(screen.getByRole('tab', { name: 'Agenda' }));
+
+    expect(
+      within(screen.getByRole('group', { name: 'Filtro da agenda' })).getByRole(
+        'button',
+        { name: 'Hoje', pressed: true },
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText(/buscar por nome ou e-mail/i)).toHaveValue(
+      'bruno',
+    );
+    const agendaDepois = screen
+      .getByText('Agenda completa')
+      .closest('[data-slot="card"]') as HTMLElement | null;
+    if (!agendaDepois) throw new Error('card Agenda completa não encontrado');
+    expect(within(agendaDepois).getByText('Bruno Costa')).toBeInTheDocument();
+    expect(within(agendaDepois).queryByText('Ana Silva')).not.toBeInTheDocument();
+  });
+
   it('totais usam o conjunto completo independente de filtro e busca', async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     vi.setSystemTime(new Date(2026, 9, 27, 12, 0, 0));
@@ -235,6 +278,30 @@ describe('PainelAdmin', () => {
     expect(valorDoTotal('Agendamentos')).toBe('3');
     expect(valorDoTotal('Clientes')).toBe('3');
     expect(valorDoTotal('Próximos')).toBe('2');
+  });
+
+  it('filtro permanece aplicado com o bloco recolhido', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    vi.setSystemTime(new Date(2026, 9, 27, 12, 0, 0));
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+
+    render(
+      <PainelAdmin agendamentos={agendamentos} clientes={clientes} />,
+    );
+
+    const filtros = screen.getByRole('group', { name: 'Filtro da agenda' });
+    await user.click(within(filtros).getByRole('button', { name: 'Hoje' }));
+    await user.click(
+      screen.getByRole('button', { name: 'Recolher filtros' }),
+    );
+
+    const agenda = screen
+      .getByText('Agenda completa')
+      .closest('[data-slot="card"]') as HTMLElement | null;
+    if (!agenda) throw new Error('card Agenda completa não encontrado');
+    expect(within(agenda).getByText('Bruno Costa')).toBeInTheDocument();
+    expect(within(agenda).queryByText('Ana Silva')).not.toBeInTheDocument();
+    expect(within(agenda).queryByText('Carla Dias')).not.toBeInTheDocument();
   });
 
   it('vazio quando filtro ou busca zera a lista', async () => {

@@ -98,14 +98,14 @@ O painel do intérprete empilha KPIs, próximos, clientes e agenda numa única r
 | TAB-02 | P1: Duas abas | Execute | Verified |
 | TAB-03 | P1: Duas abas | Execute | Verified |
 | TAB-04 | P1: Duas abas | Execute | Verified |
-| TAB-05 | P1: Duas abas | Specify | Pending |
+| TAB-05 | P1: Duas abas | Execute | Verified |
 | FIL-01 | P1: Filtros colapsáveis | Execute | Verified |
 | FIL-02 | P1: Filtros colapsáveis | Execute | Verified |
 | FIL-03 | P1: Filtros colapsáveis | Execute | Verified |
 | FIL-04 | P1: Filtros colapsáveis | Execute | Verified |
 | FIL-05 | P1: Filtros colapsáveis | Execute | Verified |
-| FIL-06 | P1: Filtros colapsáveis | Specify | Pending |
-| FIL-07 | P1: Filtros colapsáveis | Specify | Pending |
+| FIL-06 | P1: Filtros colapsáveis | Execute | Verified |
+| FIL-07 | P1: Filtros colapsáveis | Execute | Verified |
 
 **Coverage:** 12 total, 0 mapped to tasks, 12 unmapped
 
