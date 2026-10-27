@@ -1,8 +1,8 @@
 # painel-abas-filtros proofs
 
-**HEAD**: b9ce26d
+**HEAD**: f679a1f
 **Tree**: clean
-**Result**: 15 pass, 0 fail; mutations 0 killed, 0 not
+**Result**: 15 pass, 0 fail; mutations 3 killed, 0 not
 
 | Check | Proof | Ran | Passed | Result |
 | --- | --- | --- | --- | --- |
@@ -21,3 +21,11 @@
 | Build | `npm run build` | - | - | pass |
 | Build | `npm run lint` | - | - | pass |
 | Build | `npx vitest run` | - | - | pass |
+
+## Mutations
+
+| Mutation | Location | Killed |
+| --- | --- | --- |
+| TAB-01 default tab Analítico instead of Agenda | `src/components/painelAdmin.tsx:81` | yes |
+| FIL-02 filtros collapsed on load | `src/components/painelAdmin.tsx:72` | yes |
+| FIL-06 agenda list ignores filtro/busca | `src/components/painelAdmin.tsx:78` | yes |

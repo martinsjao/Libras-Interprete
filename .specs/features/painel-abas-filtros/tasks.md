@@ -163,7 +163,7 @@ Proof: `npx vitest run src/components/painelAdmin.test.tsx -t "totais"`
 ## Handoff
 
 **Settled mid-build:** none
-**Dispatched:** Verifier at HEAD a0c9538 — pending
+**Dispatched:** Verifier at HEAD f679a1f — returned (PASS, 3/3 mutations killed, no findings)
 **Walked:**
 - P1 abas `/painel`: não andado no browser (exige sessão intérprete); coberto por painelAdmin.test.tsx (aba default, conteúdo por aba, colapso de filtros, preserva filtro, totais no Analítico)
 - P1 filtros: gestos Recolher/Expandir e filtro Hoje+busca assertados nos testes unitários do componente
