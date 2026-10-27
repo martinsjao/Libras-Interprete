@@ -184,13 +184,14 @@ T7 → T8 → T9 → T10 → T11 → T12
 
 **Done when**:
 
-- [ ] Nenhuma imagem do carrossel com `alt=""`
-- [ ] `alt` = texto de `carrossel.ts`
-- [ ] `src/components/carrosselImagens.test.tsx` asserta alt descritivo no slide
-- [ ] Gate quick passa
+- [x] Nenhuma imagem do carrossel com `alt=""`
+- [x] `alt` = texto de `carrossel.ts`
+- [x] `src/components/carrosselImagens.test.tsx` asserta alt descritivo no slide
+- [x] Gate quick passa
 
 **Tests**: unit
 **Gate**: quick
+**Status**: ✅ Complete
 
 ---
 

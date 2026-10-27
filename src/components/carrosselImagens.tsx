@@ -95,7 +95,7 @@ export default function CarrosselImagens({
           >
             <Image
               src={slide.src}
-              alt=""
+              alt={slide.alt}
               fill
               sizes="100vw"
               quality={80}
