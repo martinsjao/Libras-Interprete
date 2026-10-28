@@ -1,6 +1,5 @@
 "use client";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/toast";
 import {
   HORARIOS_FIM,
   HORARIOS_INICIO,
@@ -33,7 +33,6 @@ import {
   montarMapaHorarios,
   type SlotOcupado,
 } from "@/src/lib/agendamento";
-import { CircleAlertIcon, CircleCheckIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import Calendario from "./calendario";
@@ -54,8 +53,6 @@ export default function FormularioAgendamento({
   const [clientPhone, setClientPhone] = useState("");
   const [observations, setObservations] = useState("");
   const [enviando, setEnviando] = useState(false);
-  const [erro, setErro] = useState("");
-  const [sucesso, setSucesso] = useState("");
 
   const mapaHorarios = useMemo(() => montarMapaHorarios(slots), [slots]);
   const datasLotadasSet = useMemo(
@@ -114,21 +111,31 @@ export default function FormularioAgendamento({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setErro("");
-    setSucesso("");
 
     if (!selectedDate) {
-      setErro("Selecione uma data no calendário.");
+      toast.add({
+        type: "error",
+        title: "Não foi possível agendar",
+        description: "Selecione uma data no calendário.",
+      });
       return;
     }
 
     if (!serviceType) {
-      setErro("Selecione o tipo de serviço.");
+      toast.add({
+        type: "error",
+        title: "Não foi possível agendar",
+        description: "Selecione o tipo de serviço.",
+      });
       return;
     }
 
     if (!horarioDisponivel) {
-      setErro("Selecione um horário disponível.");
+      toast.add({
+        type: "error",
+        title: "Não foi possível agendar",
+        description: "Selecione um horário disponível.",
+      });
       return;
     }
 
@@ -160,9 +167,11 @@ export default function FormularioAgendamento({
         { data: selectedDate, horario: horarioDisponivel },
       ]);
 
-      setSucesso(
-        `Agendamento confirmado para ${nomePadrao} em ${dataFormatadaLonga(selectedDate)}, ${horarioDisponivel}.`,
-      );
+      toast.add({
+        type: "success",
+        title: "Agendamento confirmado",
+        description: `Agendamento confirmado para ${nomePadrao} em ${dataFormatadaLonga(selectedDate)}, ${horarioDisponivel}.`,
+      });
 
       setSelectedDate(null);
       setServiceType("");
@@ -173,19 +182,22 @@ export default function FormularioAgendamento({
       router.refresh();
     } catch (err) {
       console.error(err);
-      setErro(
-        err instanceof Error
-          ? err.message
-          : "Erro ao confirmar agendamento. Tente novamente.",
-      );
+      toast.add({
+        type: "error",
+        title: "Não foi possível agendar",
+        description:
+          err instanceof Error
+            ? err.message
+            : "Erro ao confirmar agendamento. Tente novamente.",
+      });
     } finally {
       setEnviando(false);
     }
   }
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 md:items-start">
-      <Card>
+    <div className="grid gap-6 md:grid-cols-2 md:items-stretch">
+      <Card className="h-full">
         <CardHeader>
           <CardTitle>Escolha a data</CardTitle>
           <CardDescription>
@@ -193,7 +205,7 @@ export default function FormularioAgendamento({
             dia em outro horário livre.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="mt-2 flex min-h-0 flex-1 flex-col">
           <Calendario
             datasLotadas={datasLotadasSet}
             datasParciais={datasParciaisSet}
@@ -202,23 +214,34 @@ export default function FormularioAgendamento({
               setSelectedDate(data);
               setInitialHour("");
               setFinalHour("");
-              setErro("");
-              setSucesso("");
             }}
           />
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="h-full">
         <CardHeader>
           <CardTitle>Dados do agendamento</CardTitle>
           <CardDescription>
             Horários já ocupados por outros clientes ficam desabilitados.
           </CardDescription>
         </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent>
+
+        <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col">
+          <CardContent className="flex-1">
             <FieldGroup>
+              <Field>
+                <FieldLabel htmlFor="selectedDate">Data selecionada</FieldLabel>
+                <Input
+                  id="selectedDate"
+                  type="text"
+                  value={selectedDate ? dataFormatadaLonga(selectedDate) : ""}
+                  placeholder="Clique em um dia com vagas no calendário"
+                  readOnly
+                  disabled
+                />
+              </Field>
+
               <Field>
                 <FieldLabel htmlFor="serviceType">Tipo de serviço</FieldLabel>
                 <Select
@@ -241,30 +264,16 @@ export default function FormularioAgendamento({
                 </Select>
               </Field>
 
-              <Field>
-                <FieldLabel htmlFor="selectedDate">Data selecionada</FieldLabel>
-                <Input
-                  id="selectedDate"
-                  type="text"
-                  value={selectedDate ? dataFormatadaLonga(selectedDate) : ""}
-                  placeholder="Clique em um dia com vagas no calendário"
-                  readOnly
-                />
-              </Field>
-
               <FieldGroup className="grid gap-5 sm:grid-cols-2">
                 <Field data-disabled={!selectedDate}>
                   <FieldLabel htmlFor="initialHour">
                     Horário de início
                   </FieldLabel>
                   <Select
-                    items={[
-                      { label: "Selecione…", value: null },
-                      ...HORARIOS_INICIO.map((horario) => ({
-                        label: horario,
-                        value: horario,
-                      })),
-                    ]}
+                    items={HORARIOS_INICIO.map((horario) => ({
+                      label: horario,
+                      value: horario,
+                    }))}
                     value={initialHour || null}
                     onValueChange={(value) => {
                       const inicio = value ?? "";
@@ -320,13 +329,10 @@ export default function FormularioAgendamento({
                 <Field data-disabled={!selectedDate || !initialHour}>
                   <FieldLabel htmlFor="finalHour">Horário de fim</FieldLabel>
                   <Select
-                    items={[
-                      { label: "Selecione…", value: null },
-                      ...horariosFimDisponiveis.map((horario) => ({
-                        label: horario,
-                        value: horario,
-                      })),
-                    ]}
+                    items={horariosFimDisponiveis.map((horario) => ({
+                      label: horario,
+                      value: horario,
+                    }))}
                     value={finalHour || null}
                     onValueChange={(value) => setFinalHour(value ?? "")}
                     disabled={!selectedDate || !initialHour}
@@ -368,6 +374,7 @@ export default function FormularioAgendamento({
                   autoComplete="name"
                   value={nomePadrao}
                   readOnly
+                  disabled
                 />
               </Field>
 
@@ -381,6 +388,7 @@ export default function FormularioAgendamento({
                   spellCheck={false}
                   value={emailPadrao}
                   readOnly
+                  disabled
                 />
               </Field>
 
@@ -394,8 +402,10 @@ export default function FormularioAgendamento({
                   inputMode="numeric"
                   maxLength={15}
                   value={clientPhone}
-                  onChange={(e) => setClientPhone(formatarTelefone(e.target.value))}
-                  placeholder="(11) 99999-9999…"
+                  onChange={(e) =>
+                    setClientPhone(formatarTelefone(e.target.value))
+                  }
+                  placeholder="(11) 99999-9999"
                 />
               </Field>
 
@@ -408,26 +418,12 @@ export default function FormularioAgendamento({
                   autoComplete="off"
                   value={observations}
                   onChange={(e) => setObservations(e.target.value)}
+                  placeholder="Ex.: Preciso de intérprete de Libras"
                 />
               </Field>
-
-              {erro ? (
-                <Alert variant="destructive">
-                  <CircleAlertIcon />
-                  <AlertTitle>Não foi possível agendar</AlertTitle>
-                  <AlertDescription>{erro}</AlertDescription>
-                </Alert>
-              ) : null}
-
-              {sucesso ? (
-                <Alert>
-                  <CircleCheckIcon />
-                  <AlertTitle>Agendamento confirmado</AlertTitle>
-                  <AlertDescription>{sucesso}</AlertDescription>
-                </Alert>
-              ) : null}
             </FieldGroup>
           </CardContent>
+
           <CardFooter className="justify-end border-t-0 bg-transparent">
             <Button
               type="submit"

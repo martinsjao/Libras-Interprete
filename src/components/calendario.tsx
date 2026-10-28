@@ -57,7 +57,7 @@ export default function Calendario({
   ];
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex h-full flex-col gap-4">
       <Calendar
         mode="single"
         locale={ptBR}
@@ -92,7 +92,9 @@ export default function Calendario({
         className="w-full [--cell-size:--spacing(9)]"
       />
 
-      <ul className="flex list-none flex-wrap gap-4 text-sm text-muted-foreground">
+      <span className="my-auto h-px w-full bg-foreground/10" />
+
+      <ul className="mt-auto flex list-none flex-wrap gap-4 text-sm text-muted-foreground">
         {legendItems.map((item) => (
           <li key={item.label} className="flex items-center gap-2">
             <span

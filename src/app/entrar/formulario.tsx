@@ -1,82 +1,147 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useActionState } from 'react';
-import { Handshake } from 'lucide-react';
-import ThemeToggle from '@/src/components/themeToggle';
-import { Button } from '@/components/ui/button';
-import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
-import { entrarComEmail } from './actions';
+import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import ThemeToggle from "@/src/components/themeToggle";
+import { Eye, EyeOff, Handshake } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useActionState, useState } from "react";
+import { entrarComEmail } from "./actions";
 
 export default function FormularioEntrar() {
   const [state, formAction, pending] = useActionState(entrarComEmail, null);
+  const [senhaVisivel, setSenhaVisivel] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-(--header-bg)/92 shadow-(--header-shadow) backdrop-blur-sm">
-        <nav className="flex h-16 w-full items-center justify-between gap-4 px-5 sm:px-8 md:px-10 lg:px-16">
-          <Link
-            href="/"
-            className="flex items-center gap-2.5 text-lg font-semibold tracking-tight text-primary no-underline"
-          >
-            <Handshake className="size-5" aria-hidden="true" />
-            <span>Libras Interprete</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <ThemeToggle />
-          </div>
+    <div className="min-h-dvh bg-background">
+      <header className="absolute inset-x-0 top-0 z-20">
+        <nav className="flex h-16 w-full items-center justify-end px-5 sm:px-8 md:px-10 lg:px-16">
+          <ThemeToggle />
         </nav>
       </header>
-      <main className="grid place-items-center px-5 pb-12 pt-28">
-        <form
-          action={formAction}
-          className="w-full max-w-md rounded-2xl border border-border bg-(--surface) p-8 shadow-(--card-shadow)"
+
+      <main className="grid min-h-dvh grid-cols-1 lg:h-dvh lg:min-h-0 lg:grid-cols-2 lg:overflow-hidden">
+        <section
+          className="relative min-h-72 overflow-hidden rounded-xl bg-primary lg:m-4 lg:h-[calc(100dvh-2rem)] lg:min-h-0"
+          aria-label="Libras Interprete"
         >
-          <h1 className="mb-1 text-3xl font-semibold tracking-tight text-primary">Entrar</h1>
-          <p className="mb-6 text-muted-foreground">
-            Use o e-mail e a senha da sua conta.
-          </p>
+          <Image
+            src="/authentication/login-img.jpeg"
+            alt="Imagem ilustrativa para a área de acesso"
+            fill
+            priority
+            sizes="(max-width: 1023px) 100vw, 50vw"
+            className="object-cover"
+          />
 
-          <FieldGroup>
-            <Field>
-              <FieldLabel htmlFor="email">E-mail</FieldLabel>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                spellCheck={false}
-                required
-              />
-            </Field>
+          <div className="absolute inset-0 bg-linear-to-b from-background/40 via-transparent to-background/80" />
 
-            <Field>
-              <FieldLabel htmlFor="password">Senha</FieldLabel>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                minLength={8}
-              />
-            </Field>
-
-            {state?.error ? <FieldError>{state.error}</FieldError> : null}
-
-            <Button type="submit" className="mt-1 w-full" disabled={pending}>
-              {pending ? 'Entrando…' : 'Entrar'}
-            </Button>
-          </FieldGroup>
-
-          <p className="mt-4 text-center text-muted-foreground">
-            Ainda não tem conta?{' '}
-            <Link href="/cadastro" className="font-semibold text-primary">
-              Criar conta
+          <div className="absolute top-0 left-0 pt-8 pl-8 sm:pl-12 lg:pl-16">
+            <Link
+              href="/"
+              className="flex tracking-tight text-white no-underline"
+            >
+              <Handshake className="size-14" aria-hidden="true" />
             </Link>
-          </p>
-        </form>
+          </div>
+
+          <div className="absolute right-0 bottom-0 left-0 p-8 text-foreground sm:p-12 lg:p-16">
+            <div className="max-w-md">
+              <p className="mb-3 text-sm font-medium tracking-[0.18em] text-foreground/75 uppercase">
+                Libras Interprete
+              </p>
+              <h2 className="text-3xl leading-tight font-semibold tracking-tight sm:text-4xl">
+                Comunicação que aproxima pessoas.
+              </h2>
+            </div>
+          </div>
+        </section>
+
+        <section className="flex items-center justify-center px-5 pt-24 pb-12 sm:px-8 lg:px-12 lg:pt-16">
+          <form action={formAction} className="w-full max-w-md">
+            <Handshake
+              className="mb-2 size-8 text-primary"
+              aria-hidden="true"
+            />
+            <h1 className="mb-1 text-3xl font-semibold tracking-tight text-primary">
+              Entrar
+            </h1>
+            <p className="mb-6 text-muted-foreground">
+              Use o e-mail e a senha da sua conta.
+            </p>
+
+            <FieldGroup>
+              <Field>
+                <FieldLabel htmlFor="email">E-mail</FieldLabel>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="seu.email@exemplo.com"
+                  spellCheck={false}
+                  required
+                />
+              </Field>
+
+              <Field>
+                <FieldLabel htmlFor="password">Senha</FieldLabel>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={senhaVisivel ? "text" : "password"}
+                    autoComplete="current-password"
+                    placeholder="••••••••"
+                    required
+                    minLength={8}
+                    className="pr-10"
+                  />
+                  <button
+                    type="button"
+                    className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded-md p-1 text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                    onClick={() => setSenhaVisivel((visivel) => !visivel)}
+                    aria-label={
+                      senhaVisivel ? "Ocultar senha" : "Visualizar senha"
+                    }
+                    aria-pressed={senhaVisivel}
+                  >
+                    {senhaVisivel ? (
+                      <EyeOff className="size-4" aria-hidden="true" />
+                    ) : (
+                      <Eye className="size-4" aria-hidden="true" />
+                    )}
+                  </button>
+                </div>
+              </Field>
+
+              {state?.error ? <FieldError>{state.error}</FieldError> : null}
+
+              <Button
+                type="submit"
+                className="mt-1 w-full"
+                disabled={pending}
+                size="lg"
+              >
+                {pending ? "Entrando…" : "Entrar"}
+              </Button>
+            </FieldGroup>
+
+            <p className="mt-4 text-center text-muted-foreground">
+              Ainda não tem conta?{" "}
+              <Link href="/cadastro" className="font-semibold text-primary">
+                Criar conta
+              </Link>
+            </p>
+          </form>
+        </section>
       </main>
     </div>
   );

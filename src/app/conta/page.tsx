@@ -20,6 +20,7 @@ export default async function ContaPage() {
       horario: agendamentos.horario,
       nome: agendamentos.nome,
       email: agendamentos.email,
+      telefone: agendamentos.telefone,
     })
     .from(agendamentos)
     .where(eq(agendamentos.userId, sessao.user.id))

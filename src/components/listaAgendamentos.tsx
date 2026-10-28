@@ -1,21 +1,12 @@
-import { CalendarDaysIcon } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import {
   Empty,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from '@/components/ui/empty';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { dataFormatadaCurta, rotuloTipo } from '@/src/lib/agendamento';
+} from "@/components/ui/empty";
+import { CalendarDaysIcon } from "lucide-react";
+import { ListaAgendamentosTabela } from "@/src/components/listaAgendamentosTabela";
 
 export type ItemAgendamento = {
   id: number;
@@ -24,16 +15,21 @@ export type ItemAgendamento = {
   horario: string;
   nome: string;
   email: string;
+  telefone?: string | null;
 };
 
 export default function ListaAgendamentos({
   itens,
   vazio,
   mostrarCliente,
+  onCancel,
+  onEdit,
 }: {
   itens: ItemAgendamento[];
   vazio: string;
   mostrarCliente: boolean;
+  onCancel?: (id: number) => Promise<boolean>;
+  onEdit?: (item: ItemAgendamento) => Promise<boolean>;
 }) {
   if (itens.length === 0) {
     return (
@@ -50,38 +46,11 @@ export default function ListaAgendamentos({
   }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Data</TableHead>
-          <TableHead>Horário</TableHead>
-          <TableHead>Serviço</TableHead>
-          {mostrarCliente ? <TableHead>Cliente</TableHead> : null}
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {itens.map((item) => (
-          <TableRow key={item.id}>
-            <TableCell className="font-medium">
-              {dataFormatadaCurta(item.data)}
-            </TableCell>
-            <TableCell>{item.horario}</TableCell>
-            <TableCell>
-              <Badge variant="secondary">{rotuloTipo(item.tipo)}</Badge>
-            </TableCell>
-            {mostrarCliente ? (
-              <TableCell>
-                <div className="flex flex-col gap-0.5">
-                  <span>{item.nome}</span>
-                  <span className="text-muted-foreground text-xs">
-                    {item.email}
-                  </span>
-                </div>
-              </TableCell>
-            ) : null}
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <ListaAgendamentosTabela
+      itens={itens}
+      mostrarCliente={mostrarCliente}
+      onCancel={onCancel}
+      onEdit={onEdit}
+    />
   );
 }
