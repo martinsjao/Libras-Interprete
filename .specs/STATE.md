@@ -14,8 +14,8 @@
 
 ## Handoff
 
-- Feature: `a11y-painel-tailwind` — **DONE**
-- HEAD: `7fae78c` (+ docs commit for verification)
-- Proofs: 20 pass; mutations 3/3 killed; `validate_verification` 0 errors
-- Tests: `npx vitest run` — 28 passed
-- Next: optional push (needs explicit go-ahead); e2e Playwright deferred (AD-002)
+- Feature: `painel-abas-filtros` — **DONE**
+- HEAD: `6124b9f` (proofs.md left dirty in `.specs/` at that SHA — gate pattern)
+- Proofs: 15 pass; mutations 3/3 killed; `validate_verification` 0 errors
+- Tests: `npx vitest run` — 39 passed
+- Next: optional push (needs explicit go-ahead); browser walk of `/painel` when há sessão intérprete

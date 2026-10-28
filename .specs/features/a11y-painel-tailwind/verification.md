@@ -2,7 +2,7 @@
 
 **Verdict**: PASS
 **Mutations**: 3 - probed C7 (proximosDe bound), C11 (busca email), C13 (totais vs filtro) — all killed at 7fae78c
-**Proofs**: `proofs.md` at 7fae78c
+**Proofs**: `proofs.md` at d9034eb (gate green; `.specs/proofs.md` may stay dirty vs last docs commit — intentional)
 **Verifier**: independent sub-agent (author != verifier)
 
 ## Findings
