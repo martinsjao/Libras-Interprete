@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
+import { Toaster } from "@/components/ui/toast";
 import VLibras from "@/src/components/vlibras";
 import "./globals.css";
 
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {temaInicial}
         </Script>
         {children}
+        <Toaster />
         <VLibras />
       </body>
     </html>

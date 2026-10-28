@@ -1,6 +1,5 @@
 "use client";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/toast";
 import {
   HORARIOS_FIM,
   HORARIOS_INICIO,
@@ -33,7 +33,6 @@ import {
   montarMapaHorarios,
   type SlotOcupado,
 } from "@/src/lib/agendamento";
-import { CircleAlertIcon, CircleCheckIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import Calendario from "./calendario";
@@ -54,8 +53,6 @@ export default function FormularioAgendamento({
   const [clientPhone, setClientPhone] = useState("");
   const [observations, setObservations] = useState("");
   const [enviando, setEnviando] = useState(false);
-  const [erro, setErro] = useState("");
-  const [sucesso, setSucesso] = useState("");
 
   const mapaHorarios = useMemo(() => montarMapaHorarios(slots), [slots]);
   const datasLotadasSet = useMemo(
@@ -114,21 +111,31 @@ export default function FormularioAgendamento({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setErro("");
-    setSucesso("");
 
     if (!selectedDate) {
-      setErro("Selecione uma data no calendário.");
+      toast.add({
+        type: "error",
+        title: "Não foi possível agendar",
+        description: "Selecione uma data no calendário.",
+      });
       return;
     }
 
     if (!serviceType) {
-      setErro("Selecione o tipo de serviço.");
+      toast.add({
+        type: "error",
+        title: "Não foi possível agendar",
+        description: "Selecione o tipo de serviço.",
+      });
       return;
     }
 
     if (!horarioDisponivel) {
-      setErro("Selecione um horário disponível.");
+      toast.add({
+        type: "error",
+        title: "Não foi possível agendar",
+        description: "Selecione um horário disponível.",
+      });
       return;
     }
 
@@ -160,9 +167,11 @@ export default function FormularioAgendamento({
         { data: selectedDate, horario: horarioDisponivel },
       ]);
 
-      setSucesso(
-        `Agendamento confirmado para ${nomePadrao} em ${dataFormatadaLonga(selectedDate)}, ${horarioDisponivel}.`,
-      );
+      toast.add({
+        type: "success",
+        title: "Agendamento confirmado",
+        description: `Agendamento confirmado para ${nomePadrao} em ${dataFormatadaLonga(selectedDate)}, ${horarioDisponivel}.`,
+      });
 
       setSelectedDate(null);
       setServiceType("");
@@ -173,11 +182,14 @@ export default function FormularioAgendamento({
       router.refresh();
     } catch (err) {
       console.error(err);
-      setErro(
-        err instanceof Error
-          ? err.message
-          : "Erro ao confirmar agendamento. Tente novamente.",
-      );
+      toast.add({
+        type: "error",
+        title: "Não foi possível agendar",
+        description:
+          err instanceof Error
+            ? err.message
+            : "Erro ao confirmar agendamento. Tente novamente.",
+      });
     } finally {
       setEnviando(false);
     }
@@ -202,8 +214,6 @@ export default function FormularioAgendamento({
               setSelectedDate(data);
               setInitialHour("");
               setFinalHour("");
-              setErro("");
-              setSucesso("");
             }}
           />
         </CardContent>
@@ -216,6 +226,7 @@ export default function FormularioAgendamento({
             Horários já ocupados por outros clientes ficam desabilitados.
           </CardDescription>
         </CardHeader>
+
         <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col">
           <CardContent className="flex-1">
             <FieldGroup>
@@ -410,24 +421,9 @@ export default function FormularioAgendamento({
                   placeholder="Ex.: Preciso de intérprete de Libras"
                 />
               </Field>
-
-              {erro ? (
-                <Alert variant="destructive">
-                  <CircleAlertIcon />
-                  <AlertTitle>Não foi possível agendar</AlertTitle>
-                  <AlertDescription>{erro}</AlertDescription>
-                </Alert>
-              ) : null}
-
-              {sucesso ? (
-                <Alert>
-                  <CircleCheckIcon />
-                  <AlertTitle>Agendamento confirmado</AlertTitle>
-                  <AlertDescription>{sucesso}</AlertDescription>
-                </Alert>
-              ) : null}
             </FieldGroup>
           </CardContent>
+
           <CardFooter className="justify-end border-t-0 bg-transparent">
             <Button
               type="submit"
