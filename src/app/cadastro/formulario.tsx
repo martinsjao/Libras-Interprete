@@ -9,14 +9,15 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import ThemeToggle from "@/src/components/themeToggle";
-import { Handshake } from "lucide-react";
+import { Eye, EyeOff, Handshake } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { criarConta } from "./actions";
 
 export default function FormularioCadastro() {
   const [state, formAction, pending] = useActionState(criarConta, null);
+  const [senhaVisivel, setSenhaVisivel] = useState(false);
 
   return (
     <div className="min-h-dvh bg-background">
@@ -68,15 +69,31 @@ export default function FormularioCadastro() {
 
               <Field>
                 <FieldLabel htmlFor="password">Senha</FieldLabel>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="new-password"
-                  placeholder="••••••••"
-                  required
-                  minLength={8}
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={senhaVisivel ? "text" : "password"}
+                    autoComplete="new-password"
+                    placeholder="••••••••"
+                    required
+                    minLength={8}
+                    className="pr-10"
+                  />
+                  <button
+                    type="button"
+                    className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded-md p-1 text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                    onClick={() => setSenhaVisivel((visivel) => !visivel)}
+                    aria-label={senhaVisivel ? "Ocultar senha" : "Visualizar senha"}
+                    aria-pressed={senhaVisivel}
+                  >
+                    {senhaVisivel ? (
+                      <EyeOff className="size-4" aria-hidden="true" />
+                    ) : (
+                      <Eye className="size-4" aria-hidden="true" />
+                    )}
+                  </button>
+                </div>
               </Field>
 
               {state?.error ? <FieldError>{state.error}</FieldError> : null}
