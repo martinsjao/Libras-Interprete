@@ -258,13 +258,10 @@ export default function FormularioAgendamento({
                     Horário de início
                   </FieldLabel>
                   <Select
-                    items={[
-                      { label: "Selecione…", value: null },
-                      ...HORARIOS_INICIO.map((horario) => ({
-                        label: horario,
-                        value: horario,
-                      })),
-                    ]}
+                    items={HORARIOS_INICIO.map((horario) => ({
+                      label: horario,
+                      value: horario,
+                    }))}
                     value={initialHour || null}
                     onValueChange={(value) => {
                       const inicio = value ?? "";
@@ -320,13 +317,10 @@ export default function FormularioAgendamento({
                 <Field data-disabled={!selectedDate || !initialHour}>
                   <FieldLabel htmlFor="finalHour">Horário de fim</FieldLabel>
                   <Select
-                    items={[
-                      { label: "Selecione…", value: null },
-                      ...horariosFimDisponiveis.map((horario) => ({
-                        label: horario,
-                        value: horario,
-                      })),
-                    ]}
+                    items={horariosFimDisponiveis.map((horario) => ({
+                      label: horario,
+                      value: horario,
+                    }))}
                     value={finalHour || null}
                     onValueChange={(value) => setFinalHour(value ?? "")}
                     disabled={!selectedDate || !initialHour}
