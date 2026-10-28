@@ -1,0 +1,40 @@
+%%{init: {'theme': 'base', 'themeVariables': {
+  'primaryColor': '#4f46e5', 'primaryTextColor': '#ffffff',
+  'primaryBorderColor': '#3730a3', 'lineColor': '#94a3b8',
+  'secondaryColor': '#10b981', 'tertiaryColor': '#f59e0b',
+  'background': '#ffffff', 'mainBkg': '#f8fafc',
+  'nodeBorder': '#cbd5e1', 'clusterBkg': '#f1f5f9',
+  'clusterBorder': '#e2e8f0', 'titleColor': '#1e293b',
+  'edgeLabelBackground': '#ffffff', 'textColor': '#334155'
+}}}%%
+erDiagram
+    NEON_AUTH_USER ||--|| PERFIS : "user_id"
+    PERFIS ||--o{ AGENDAMENTOS : "user_id"
+
+    NEON_AUTH_USER {
+        text id PK
+        text email
+        text name
+    }
+
+    PERFIS {
+        serial id PK
+        text user_id UK
+        text email UK
+        text nome
+        text papel
+        timestamptz created_at
+    }
+
+    AGENDAMENTOS {
+        serial id PK
+        text user_id
+        text tipo
+        date data
+        text horario
+        text nome
+        text email
+        text telefone
+        text observacoes
+        timestamptz created_at
+    }

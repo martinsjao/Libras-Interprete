@@ -1,0 +1,32 @@
+%%{init: {'theme': 'base', 'themeVariables': {
+  'primaryColor': '#4f46e5', 'primaryTextColor': '#ffffff',
+  'primaryBorderColor': '#3730a3', 'lineColor': '#94a3b8',
+  'secondaryColor': '#10b981', 'tertiaryColor': '#f59e0b',
+  'background': '#ffffff', 'mainBkg': '#f8fafc',
+  'nodeBorder': '#cbd5e1', 'clusterBkg': '#f1f5f9',
+  'clusterBorder': '#e2e8f0', 'titleColor': '#1e293b',
+  'edgeLabelBackground': '#ffffff', 'textColor': '#334155'
+}}}%%
+flowchart TD
+    inicio([Acessa o site]) --> publico[Pagina publica]
+    publico --> precisaAuth{Quer agendar ou area logada?}
+    precisaAuth -->|Nao| fimPublico([Consulta servicos / contato])
+    precisaAuth -->|Sim| temConta{Ja tem conta?}
+
+    temConta -->|Nao| cadastro[Cadastro de cliente]
+    cadastro --> criaPerfil[(Cria perfil cliente)]
+    criaPerfil --> login
+    temConta -->|Sim| login[Login Neon Auth]
+
+    login --> papel{Papel do perfil?}
+    papel -->|cliente| conta["Conta: meus horarios"]
+    papel -->|interprete| painel["Painel: agenda e clientes"]
+
+    conta --> reservar[Escolhe tipo, data e horario]
+    reservar --> livre{Horario livre?}
+    livre -->|Nao| conflito[Informa conflito]
+    conflito --> reservar
+    livre -->|Sim| salva[(Salva agendamento)]
+    salva --> fimCliente([Reserva confirmada])
+
+    painel --> fimInterprete([Consulta agenda completa])
