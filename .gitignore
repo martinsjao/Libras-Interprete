@@ -20,6 +20,9 @@
 # production
 /build
 
+# agent / SDD specs (local only — not shipped)
+.specs/
+
 # misc
 .DS_Store
 *.pem
