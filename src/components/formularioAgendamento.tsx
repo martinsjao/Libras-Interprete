@@ -227,7 +227,7 @@ export default function FormularioAgendamento({
                   onValueChange={(value) => setServiceType(value ?? "")}
                 >
                   <SelectTrigger id="serviceType" className="w-full">
-                    <SelectValue placeholder="Selecione..." />
+                    <SelectValue placeholder="Selecione…" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
@@ -259,7 +259,7 @@ export default function FormularioAgendamento({
                   </FieldLabel>
                   <Select
                     items={[
-                      { label: "Selecione...", value: null },
+                      { label: "Selecione…", value: null },
                       ...HORARIOS_INICIO.map((horario) => ({
                         label: horario,
                         value: horario,
@@ -287,7 +287,7 @@ export default function FormularioAgendamento({
                     disabled={!selectedDate}
                   >
                     <SelectTrigger id="initialHour" className="w-full">
-                      <SelectValue placeholder="Selecione..." />
+                      <SelectValue placeholder="Selecione…" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
@@ -321,7 +321,7 @@ export default function FormularioAgendamento({
                   <FieldLabel htmlFor="finalHour">Horário de fim</FieldLabel>
                   <Select
                     items={[
-                      { label: "Selecione...", value: null },
+                      { label: "Selecione…", value: null },
                       ...horariosFimDisponiveis.map((horario) => ({
                         label: horario,
                         value: horario,
@@ -332,7 +332,7 @@ export default function FormularioAgendamento({
                     disabled={!selectedDate || !initialHour}
                   >
                     <SelectTrigger id="finalHour" className="w-full">
-                      <SelectValue placeholder="Selecione..." />
+                      <SelectValue placeholder="Selecione…" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
@@ -363,7 +363,9 @@ export default function FormularioAgendamento({
                 <FieldLabel htmlFor="clientName">Seu nome</FieldLabel>
                 <Input
                   id="clientName"
+                  name="clientName"
                   type="text"
+                  autoComplete="name"
                   value={nomePadrao}
                   readOnly
                 />
@@ -373,7 +375,10 @@ export default function FormularioAgendamento({
                 <FieldLabel htmlFor="clientEmail">E-mail</FieldLabel>
                 <Input
                   id="clientEmail"
+                  name="clientEmail"
                   type="email"
+                  autoComplete="email"
+                  spellCheck={false}
                   value={emailPadrao}
                   readOnly
                 />
@@ -383,12 +388,14 @@ export default function FormularioAgendamento({
                 <FieldLabel htmlFor="clientPhone">Telefone</FieldLabel>
                 <Input
                   id="clientPhone"
+                  name="clientPhone"
                   type="tel"
+                  autoComplete="tel"
                   inputMode="numeric"
                   maxLength={15}
                   value={clientPhone}
                   onChange={(e) => setClientPhone(formatarTelefone(e.target.value))}
-                  placeholder="(11) 99999-9999"
+                  placeholder="(11) 99999-9999…"
                 />
               </Field>
 
@@ -396,7 +403,9 @@ export default function FormularioAgendamento({
                 <FieldLabel htmlFor="observations">Observações</FieldLabel>
                 <Textarea
                   id="observations"
+                  name="observations"
                   rows={3}
+                  autoComplete="off"
                   value={observations}
                   onChange={(e) => setObservations(e.target.value)}
                 />
@@ -427,7 +436,7 @@ export default function FormularioAgendamento({
               className="w-full sm:w-auto"
             >
               {enviando ? <Spinner data-icon="inline-start" /> : null}
-              {enviando ? "Enviando..." : "Confirmar agendamento"}
+              {enviando ? "Enviando…" : "Confirmar agendamento"}
             </Button>
           </CardFooter>
         </form>

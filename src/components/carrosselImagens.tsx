@@ -29,11 +29,21 @@ export default function CarrosselImagens({
   children?: ReactNode;
 }) {
   const [indice, setIndice] = useState(0);
+  const [reduzirMovimento, setReduzirMovimento] = useState(false);
   const total = slides.length;
   const trocandoRef = useRef(false);
 
   useEffect(() => {
-    if (total <= 1) return;
+    if (typeof window.matchMedia !== 'function') return;
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const sync = () => setReduzirMovimento(media.matches);
+    sync();
+    media.addEventListener('change', sync);
+    return () => media.removeEventListener('change', sync);
+  }, []);
+
+  useEffect(() => {
+    if (total <= 1 || reduzirMovimento) return;
 
     const id = window.setInterval(() => {
       if (trocandoRef.current) return;
@@ -45,14 +55,14 @@ export default function CarrosselImagens({
     }, intervaloMs);
 
     return () => window.clearInterval(id);
-  }, [intervaloMs, total]);
+  }, [intervaloMs, reduzirMovimento, total]);
 
   if (total === 0) {
     return (
-      <Empty className={cn('min-h-[100dvh] border border-dashed', className)}>
+      <Empty className={cn('min-h-dvh border border-dashed', className)}>
         <EmptyHeader>
           <EmptyMedia variant="icon">
-            <ImagesIcon />
+            <ImagesIcon aria-hidden="true" />
           </EmptyMedia>
           <EmptyTitle>Nenhuma imagem</EmptyTitle>
           <EmptyDescription>
@@ -75,41 +85,52 @@ export default function CarrosselImagens({
 
   const anterior = () => irPara((indice - 1 + total) % total);
   const proximo = () => irPara((indice + 1) % total);
+  const duracaoTransicao = reduzirMovimento ? 0 : TRANSICAO_MS;
 
   return (
     <div
-      className={cn('relative min-h-[100dvh] w-full overflow-hidden', className)}
+      className={cn('relative min-h-dvh w-full overflow-hidden', className)}
       role="region"
       aria-roledescription="carrossel"
       aria-label="Galeria de imagens de fundo"
     >
-      <div className="absolute inset-0" aria-hidden="true">
-        {slides.map((slide, i) => (
-          <div
-            key={slide.src}
-            className={cn(
-              'absolute inset-0 will-change-[opacity] transition-opacity ease-in-out',
-              i === indice ? 'opacity-100' : 'opacity-0',
-            )}
-            style={{ transitionDuration: `${TRANSICAO_MS}ms` }}
-          >
-            <Image
-              src={slide.src}
-              alt={slide.alt}
-              fill
-              sizes="100vw"
-              quality={80}
-              className="object-cover"
-              priority={i <= 1}
-              loading={i <= 1 ? 'eager' : 'lazy'}
-            />
-          </div>
-        ))}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/55 via-black/45 to-black/70" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.35)_100%)]" />
+      <div className="absolute inset-0">
+        {slides.map((slide, i) => {
+          const ativo = i === indice;
+          return (
+            <div
+              key={slide.src}
+              className={cn(
+                'absolute inset-0 will-change-opacity transition-opacity ease-in-out',
+                ativo ? 'opacity-100' : 'opacity-0',
+              )}
+              style={{ transitionDuration: `${duracaoTransicao}ms` }}
+              aria-hidden={ativo ? undefined : true}
+            >
+              <Image
+                src={slide.src}
+                alt={slide.alt}
+                fill
+                sizes="100vw"
+                quality={80}
+                className="object-cover"
+                priority={i <= 1}
+                loading={i <= 1 ? 'eager' : 'lazy'}
+              />
+            </div>
+          );
+        })}
+        <div
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/55 via-black/45 to-black/70"
+          aria-hidden="true"
+        />
+        <div
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.35)_100%)]"
+          aria-hidden="true"
+        />
       </div>
 
-      <div className="relative z-10 flex min-h-[100dvh] w-full flex-col items-center justify-center px-5 pb-24 pt-24 sm:px-8 md:px-10 lg:px-16">
+      <div className="relative z-10 flex min-h-dvh w-full flex-col items-center justify-center px-5 pb-24 pt-24 sm:px-8 md:px-10 lg:px-16">
         {children}
       </div>
 
@@ -123,7 +144,7 @@ export default function CarrosselImagens({
             onClick={anterior}
             aria-label="Imagem anterior"
           >
-            <ChevronLeft />
+            <ChevronLeft aria-hidden="true" />
           </Button>
           <Button
             type="button"
@@ -133,7 +154,7 @@ export default function CarrosselImagens({
             onClick={proximo}
             aria-label="Próxima imagem"
           >
-            <ChevronRight />
+            <ChevronRight aria-hidden="true" />
           </Button>
 
           <div className="absolute inset-x-0 bottom-8 z-20 flex justify-center gap-2.5">
@@ -142,9 +163,9 @@ export default function CarrosselImagens({
                 key={slide.src}
                 type="button"
                 aria-label={`Ir para imagem ${i + 1}`}
-                aria-current={i === indice}
+                aria-current={i === indice ? 'true' : undefined}
                 className={cn(
-                  'h-2 rounded-full transition-all duration-300',
+                  'h-2 rounded-full transition-[width,background-color] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/40',
                   i === indice
                     ? 'w-7 bg-white'
                     : 'w-2 bg-white/45 hover:bg-white/70',

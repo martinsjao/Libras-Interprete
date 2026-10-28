@@ -40,6 +40,16 @@ describe('CarrosselImagens', () => {
       'alt',
       'Acompanhamento em consultas e reuniões',
     );
+
+    const ativa = screen.getByRole('img', {
+      name: 'Interpretação em Libras em eventos e cursos',
+    });
+    expect(ativa).toBeInTheDocument();
+    expect(
+      screen.queryByRole('img', {
+        name: 'Acompanhamento em consultas e reuniões',
+      }),
+    ).not.toBeInTheDocument();
   });
 
   it('aria-live anuncia o alt do slide ativo', async () => {

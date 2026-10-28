@@ -14,7 +14,7 @@ export default function FormularioEntrar() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-[color-mix(in_srgb,var(--header-bg)_92%,transparent)] shadow-[var(--header-shadow)] backdrop-blur-sm">
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-(--header-bg)/92 shadow-(--header-shadow) backdrop-blur-sm">
         <nav className="flex h-16 w-full items-center justify-between gap-4 px-5 sm:px-8 md:px-10 lg:px-16">
           <Link
             href="/"
@@ -31,7 +31,7 @@ export default function FormularioEntrar() {
       <main className="grid place-items-center px-5 pb-12 pt-28">
         <form
           action={formAction}
-          className="w-full max-w-[440px] rounded-2xl border border-border bg-[var(--surface)] p-8 shadow-[var(--card-shadow)]"
+          className="w-full max-w-md rounded-2xl border border-border bg-(--surface) p-8 shadow-(--card-shadow)"
         >
           <h1 className="mb-1 text-3xl font-semibold tracking-tight text-primary">Entrar</h1>
           <p className="mb-6 text-muted-foreground">
@@ -46,6 +46,7 @@ export default function FormularioEntrar() {
                 name="email"
                 type="email"
                 autoComplete="email"
+                spellCheck={false}
                 required
               />
             </Field>
@@ -65,7 +66,7 @@ export default function FormularioEntrar() {
             {state?.error ? <FieldError>{state.error}</FieldError> : null}
 
             <Button type="submit" className="mt-1 w-full" disabled={pending}>
-              {pending ? 'Entrando...' : 'Entrar'}
+              {pending ? 'Entrando…' : 'Entrar'}
             </Button>
           </FieldGroup>
 

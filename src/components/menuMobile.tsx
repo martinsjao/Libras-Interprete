@@ -16,16 +16,17 @@ export default function MenuMobile({
     'font-medium text-foreground no-underline transition-colors hover:text-primary';
 
   const contaClass =
-    'inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground no-underline transition-colors hover:bg-[var(--primary-hover)] active:scale-[0.98]';
+    'inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground no-underline transition-colors hover:bg-(--primary-hover) active:scale-95';
 
   return (
     <>
       <ul
+        id="menu-principal"
         className={[
           'list-none items-center justify-center gap-8',
           'md:col-start-2 md:flex md:justify-self-center',
           aberto
-            ? 'absolute inset-x-0 top-16 z-40 flex flex-col gap-4 border-b border-border bg-[var(--header-bg)] px-5 py-5 shadow-[var(--header-shadow)] sm:px-8'
+            ? 'absolute inset-x-0 top-16 z-40 flex flex-col gap-4 border-b border-border bg-(--header-bg) px-5 py-5 shadow-(--header-shadow) sm:px-8'
             : 'hidden',
         ].join(' ')}
       >
@@ -79,8 +80,9 @@ export default function MenuMobile({
         </Link>
         <button
           type="button"
-          className="grid size-10 place-items-center rounded-lg border border-border bg-[var(--toggle-bg)] md:hidden"
+          className="grid size-10 place-items-center rounded-lg border border-border bg-(--toggle-bg) outline-none transition-colors hover:bg-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:hidden"
           aria-expanded={aberto}
+          aria-controls="menu-principal"
           aria-label={aberto ? 'Fechar menu' : 'Abrir menu'}
           onClick={() => setAberto(!aberto)}
         >

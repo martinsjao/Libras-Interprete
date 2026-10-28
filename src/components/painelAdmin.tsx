@@ -77,15 +77,23 @@ export default function PainelAdmin({
   const totalAgendamentos = agendamentos.length;
   const agendaFiltrada = filtrarAgenda(agendamentos, filtro, busca);
 
+  const [aba, setAba] = useState('agenda');
+
   return (
-    <Tabs defaultValue="agenda" className="gap-6">
+    <Tabs
+      value={aba}
+      onValueChange={(valor) => {
+        if (typeof valor === 'string') setAba(valor);
+      }}
+      className="gap-6"
+    >
       <TabsList className="w-full max-w-md">
         <TabsTrigger value="agenda">
-          <ListIcon data-icon="inline-start" />
+          <ListIcon data-icon="inline-start" aria-hidden="true" />
           Agenda
         </TabsTrigger>
         <TabsTrigger value="analitico">
-          <ChartColumnIcon data-icon="inline-start" />
+          <ChartColumnIcon data-icon="inline-start" aria-hidden="true" />
           Analítico
         </TabsTrigger>
       </TabsList>

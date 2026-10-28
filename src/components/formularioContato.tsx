@@ -26,7 +26,9 @@ export default function FormularioContato() {
           <FieldLabel htmlFor="contatoNome">Nome</FieldLabel>
           <Input
             id="contatoNome"
-            placeholder="Seu nome"
+            name="name"
+            autoComplete="name"
+            placeholder="Seu nome…"
             value={nome}
             onChange={(e) => {
               setNome(e.target.value);
@@ -39,8 +41,11 @@ export default function FormularioContato() {
           <FieldLabel htmlFor="contatoEmail">E-mail</FieldLabel>
           <Input
             id="contatoEmail"
+            name="email"
             type="email"
-            placeholder="voce@email.com"
+            autoComplete="email"
+            spellCheck={false}
+            placeholder="voce@email.com…"
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
@@ -53,8 +58,10 @@ export default function FormularioContato() {
           <FieldLabel htmlFor="contatoMensagem">Mensagem</FieldLabel>
           <Textarea
             id="contatoMensagem"
+            name="message"
             rows={4}
-            placeholder="Como podemos ajudar?"
+            autoComplete="off"
+            placeholder="Como podemos ajudar?…"
             value={mensagem}
             onChange={(e) => {
               setMensagem(e.target.value);
@@ -68,7 +75,8 @@ export default function FormularioContato() {
       {enviado ? (
         <p
           role="status"
-          className="rounded-lg bg-[var(--success-bg)] px-4 py-3 font-medium text-[var(--success-text)]"
+          aria-live="polite"
+          className="rounded-lg bg-(--success-bg) px-4 py-3 font-medium text-(--success-text)"
         >
           Mensagem enviada com sucesso! Entraremos em contato em breve.
         </p>

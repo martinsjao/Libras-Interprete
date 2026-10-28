@@ -31,7 +31,7 @@ export default function ThemeToggle() {
   return (
     <button
       type="button"
-      className="grid size-10 place-items-center rounded-full border border-border bg-[var(--toggle-bg)] text-foreground disabled:opacity-60 [&_svg]:size-[1.15rem] [&_svg]:stroke-2"
+      className="grid size-10 place-items-center rounded-full border border-border bg-(--toggle-bg) text-foreground outline-none transition-colors hover:bg-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-60 [&_svg]:size-4.5 [&_svg]:stroke-2"
       onClick={alternar}
       aria-label={escuro ? 'Ativar modo claro' : 'Ativar modo escuro'}
       title={escuro ? 'Modo claro' : 'Modo escuro'}

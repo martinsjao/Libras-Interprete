@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { CalendarPlusIcon, ListIcon } from 'lucide-react';
 import FormularioAgendamento from '@/src/components/formularioAgendamento';
 import ListaAgendamentos, {
@@ -23,15 +24,23 @@ export default function ContaCliente({
   nomePadrao: string;
   emailPadrao: string;
 }) {
+  const [aba, setAba] = useState(itens.length === 0 ? 'agendar' : 'meus');
+
   return (
-    <Tabs defaultValue={itens.length === 0 ? 'agendar' : 'meus'} className="gap-6">
+    <Tabs
+      value={aba}
+      onValueChange={(valor) => {
+        if (typeof valor === 'string') setAba(valor);
+      }}
+      className="gap-6"
+    >
       <TabsList className="w-full max-w-md">
         <TabsTrigger value="meus">
-          <ListIcon data-icon="inline-start" />
+          <ListIcon data-icon="inline-start" aria-hidden="true" />
           Meus agendamentos
         </TabsTrigger>
         <TabsTrigger value="agendar">
-          <CalendarPlusIcon data-icon="inline-start" />
+          <CalendarPlusIcon data-icon="inline-start" aria-hidden="true" />
           Novo agendamento
         </TabsTrigger>
       </TabsList>
