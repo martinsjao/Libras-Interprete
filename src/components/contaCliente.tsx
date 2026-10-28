@@ -28,8 +28,13 @@ export default function ContaCliente({
 }) {
   const router = useRouter();
   const [cancelados, setCancelados] = useState<Set<number>>(() => new Set());
+  const [atualizacoes, setAtualizacoes] = useState<
+    Map<number, ItemAgendamento>
+  >(() => new Map());
   const [aba, setAba] = useState(itens.length === 0 ? 'agendar' : 'meus');
-  const agendamentos = itens.filter((item) => !cancelados.has(item.id));
+  const agendamentos = itens
+    .map((item) => atualizacoes.get(item.id) ?? item)
+    .filter((item) => !cancelados.has(item.id));
 
   async function cancelarAgendamento(id: number) {
     try {
@@ -61,6 +66,48 @@ export default function ContaCliente({
             : 'Ocorreu um erro ao cancelar o horário. Tente novamente.',
       });
       return false;
+    }
+  }
+
+  async function editarAgendamento(itemAtualizado: ItemAgendamento) {
+      try {
+        const response = await fetch(`/api/agendamento/${itemAtualizado.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            data: itemAtualizado.data,
+            horario: itemAtualizado.horario,
+            tipo: itemAtualizado.tipo,
+            telefone: itemAtualizado.telefone,
+          }),
+        });
+
+        if (!response.ok) {
+          const payload = await response.json().catch(() => null);
+          throw new Error(payload?.error || 'Não foi possível editar o agendamento.');
+        }
+
+        setAtualizacoes((atual) =>
+          new Map(atual).set(itemAtualizado.id, itemAtualizado),
+        );
+        toast.add({
+          type: 'success',
+          title: 'Agendamento atualizado',
+          description: 'As alterações foram salvas com sucesso.',
+        });
+        router.refresh();
+        return true;
+      } catch (error) {
+        console.error(error);
+        toast.add({
+          type: 'error',
+          title: 'Não foi possível editar',
+          description:
+            error instanceof Error
+              ? error.message
+              : 'Ocorreu um erro ao editar o agendamento. Tente novamente.',
+        });
+        return false;
     }
   }
 
@@ -96,6 +143,7 @@ export default function ContaCliente({
               itens={agendamentos}
               mostrarCliente={false}
               onCancel={cancelarAgendamento}
+              onEdit={editarAgendamento}
               vazio="Você ainda não tem agendamentos. Use a aba Novo agendamento."
             />
           </CardContent>
