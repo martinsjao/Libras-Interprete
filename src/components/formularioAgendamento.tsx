@@ -220,6 +220,18 @@ export default function FormularioAgendamento({
           <CardContent className="flex-1">
             <FieldGroup>
               <Field>
+                <FieldLabel htmlFor="selectedDate">Data selecionada</FieldLabel>
+                <Input
+                  id="selectedDate"
+                  type="text"
+                  value={selectedDate ? dataFormatadaLonga(selectedDate) : ""}
+                  placeholder="Clique em um dia com vagas no calendário"
+                  readOnly
+                  disabled
+                />
+              </Field>
+
+              <Field>
                 <FieldLabel htmlFor="serviceType">Tipo de serviço</FieldLabel>
                 <Select
                   items={[...TIPOS_SERVICO]}
@@ -239,17 +251,6 @@ export default function FormularioAgendamento({
                     </SelectGroup>
                   </SelectContent>
                 </Select>
-              </Field>
-
-              <Field>
-                <FieldLabel htmlFor="selectedDate">Data selecionada</FieldLabel>
-                <Input
-                  id="selectedDate"
-                  type="text"
-                  value={selectedDate ? dataFormatadaLonga(selectedDate) : ""}
-                  placeholder="Clique em um dia com vagas no calendário"
-                  readOnly
-                />
               </Field>
 
               <FieldGroup className="grid gap-5 sm:grid-cols-2">
@@ -362,6 +363,7 @@ export default function FormularioAgendamento({
                   autoComplete="name"
                   value={nomePadrao}
                   readOnly
+                  disabled
                 />
               </Field>
 
@@ -375,6 +377,7 @@ export default function FormularioAgendamento({
                   spellCheck={false}
                   value={emailPadrao}
                   readOnly
+                  disabled
                 />
               </Field>
 
@@ -391,7 +394,7 @@ export default function FormularioAgendamento({
                   onChange={(e) =>
                     setClientPhone(formatarTelefone(e.target.value))
                   }
-                  placeholder="(11) 99999-9999…"
+                  placeholder="(11) 99999-9999"
                 />
               </Field>
 
@@ -404,6 +407,7 @@ export default function FormularioAgendamento({
                   autoComplete="off"
                   value={observations}
                   onChange={(e) => setObservations(e.target.value)}
+                  placeholder="Ex.: Preciso de intérprete de Libras"
                 />
               </Field>
 
