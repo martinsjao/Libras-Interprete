@@ -84,7 +84,9 @@ export default function FormularioCadastro() {
                     type="button"
                     className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded-md p-1 text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
                     onClick={() => setSenhaVisivel((visivel) => !visivel)}
-                    aria-label={senhaVisivel ? "Ocultar senha" : "Visualizar senha"}
+                    aria-label={
+                      senhaVisivel ? "Ocultar senha" : "Visualizar senha"
+                    }
                     aria-pressed={senhaVisivel}
                   >
                     {senhaVisivel ? (
@@ -130,12 +132,12 @@ export default function FormularioCadastro() {
             className="object-cover"
           />
 
-          <div className="absolute inset-0 bg-linear-to-b from-transparent to-background/80" />
+          <div className="absolute inset-0 bg-linear-to-b from-background/40 via-transparent to-background/80" />
 
           <div className="absolute top-0 left-0 pt-8 pl-8 sm:pl-12 lg:pl-16">
             <Link
               href="/"
-              className="flex tracking-tight text-foreground no-underline"
+              className="flex tracking-tight text-white no-underline"
             >
               <Handshake className="size-14" aria-hidden="true" />
             </Link>
