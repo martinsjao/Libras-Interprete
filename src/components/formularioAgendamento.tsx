@@ -184,8 +184,8 @@ export default function FormularioAgendamento({
   }
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 md:items-start">
-      <Card>
+    <div className="grid gap-6 md:grid-cols-2 md:items-stretch">
+      <Card className="h-full">
         <CardHeader>
           <CardTitle>Escolha a data</CardTitle>
           <CardDescription>
@@ -193,7 +193,7 @@ export default function FormularioAgendamento({
             dia em outro horário livre.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="mt-2 flex min-h-0 flex-1 flex-col">
           <Calendario
             datasLotadas={datasLotadasSet}
             datasParciais={datasParciaisSet}
@@ -209,15 +209,15 @@ export default function FormularioAgendamento({
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="h-full">
         <CardHeader>
           <CardTitle>Dados do agendamento</CardTitle>
           <CardDescription>
             Horários já ocupados por outros clientes ficam desabilitados.
           </CardDescription>
         </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent>
+        <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col">
+          <CardContent className="flex-1">
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="serviceType">Tipo de serviço</FieldLabel>
@@ -388,7 +388,9 @@ export default function FormularioAgendamento({
                   inputMode="numeric"
                   maxLength={15}
                   value={clientPhone}
-                  onChange={(e) => setClientPhone(formatarTelefone(e.target.value))}
+                  onChange={(e) =>
+                    setClientPhone(formatarTelefone(e.target.value))
+                  }
                   placeholder="(11) 99999-9999…"
                 />
               </Field>

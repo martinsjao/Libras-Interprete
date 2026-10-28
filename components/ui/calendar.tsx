@@ -55,7 +55,7 @@ function Calendar({
         ),
         month: cn("flex w-full flex-col gap-4", defaultClassNames.month),
         nav: cn(
-          "absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1",
+          "absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1 mb-2",
           defaultClassNames.nav,
         ),
         button_previous: cn(
@@ -123,7 +123,7 @@ function Calendar({
           defaultClassNames.range_end,
         ),
         today: cn(
-          "rounded-(--cell-radius) bg-muted ring-4 ring-current/15",
+          "rounded-(--cell-radius) bg-muted ring-4 ring-current/10",
           defaultClassNames.today,
         ),
         outside: cn(
